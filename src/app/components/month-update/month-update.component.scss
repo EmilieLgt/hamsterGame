@@ -1,0 +1,109 @@
+@import "../../../styles.scss";
+
+* {
+  font-size: 1.1em;
+}
+.hamster-month-container {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  justify-content: space-between;
+  margin: 2em;
+}
+
+.month-death,
+.month-price {
+  margin-left: 2em;
+}
+
+.month-death {
+  p {
+    display: flex;
+    align-items: center;
+  }
+}
+.month-price {
+  margin-top: 1em;
+}
+
+.one-action-container {
+  margin-left: 2em;
+  margin-top: 1em;
+
+  button {
+    background-color: $black;
+    border: none;
+    color: $white;
+    margin: 0 1em;
+  }
+  input {
+    background-color: $black;
+    border-bottom: 3px $white solid;
+    border-top: none;
+    border-right: none;
+    border-top: none;
+    width: 20%;
+    color: $white;
+  }
+}
+
+.how-many-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1em;
+}
+
+#oui {
+  color: $green;
+}
+
+#non {
+  color: red;
+}
+.next-month-button {
+  @extend .button-play-again;
+  margin-bottom: 1em;
+}
+
+.end-of-month-container {
+  text-align: center;
+  margin: 1em;
+}
+
+.icon-food {
+  width: 30px;
+}
+
+.icon-money {
+  width: 30px;
+}
+
+.skull-icon {
+  width: 20px;
+  margin-right: 0.5em;
+}
+
+.game-over {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2em;
+  h3 {
+    color: $red;
+    font-size: 2em;
+  }
+  .lol {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+  }
+  button {
+    margin-top: 1em;
+  }
+}
+
+#no-neg {
+  text-align: center;
+}

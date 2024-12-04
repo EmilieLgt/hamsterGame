@@ -1,0 +1,20 @@
+@import "../../../styles.scss";
+
+p {
+  padding: 1em;
+  font-size: 1.2em;
+  text-align: center;
+  width: 80%;
+  margin: auto;
+}
+img {
+  width: 15px;
+}
+.first-p {
+  margin-top: 1em;
+}
+
+button {
+  @extend .button-play-again;
+  margin-top: 1em;
+}

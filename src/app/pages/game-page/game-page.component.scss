@@ -1,0 +1,15 @@
+img {
+  width: 60px;
+}
+.title {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  margin-top: 2em;
+}
+
+h1 {
+  font-size: 3em;
+}

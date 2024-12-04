@@ -1,0 +1,194 @@
+@if(endOfGame) {
+<div class="game-over">
+  <h3>GAME OVER</h3>
+  <p class="red">TOUS LES HAMSTERS SONT MORTS</p>
+  <p class="lol">La SPA, L214, PETA et Brigitte Bardot seront informées...</p>
+  <p>Vous avez tenu {{ monthNumber - 1 }} mois.</p>
+  <button class="next-month-button" (click)="resetAll()">Rejouer</button>
+</div>
+} @else {
+<h2>Situation du mois : {{ monthNumber }}</h2>
+<div class="separator"></div>
+<div class="hamster-month-container">
+  <div class="gender-hamster">
+    <h3>Mâles</h3>
+    <p>Adultes : {{ maleAdultHasmters }}</p>
+    <p>Petits : {{ maleSmallHamsters }}</p>
+  </div>
+  <div class="gender-hamster">
+    <h3>Femelles</h3>
+    <p>Adultes : {{ femaleAdultHasmters }}</p>
+    <p>Petits :{{ femaleSmallHamsters }}</p>
+  </div>
+  <div class="gender-hamster">
+    <h3>Cages</h3>
+    <p>Nbre : {{ cage }}</p>
+    <p>Nbre/cage : {{ hamstersByCage }}</p>
+  </div>
+</div>
+<div class="separator"></div>
+
+<div class="month-death">
+  <p>
+    <img class="icon-food" src="/600px-Animal_Food.webp" />NOURRITURE RESTANTE :
+    {{ foodStock }} kg
+  </p>
+  <p>
+    <img class="icon-money" src="/pix_coin-512.webp" />ARGENT : {{ money }}fr
+  </p>
+</div>
+<div class="separator"></div>
+<div class="month-death">
+  <p>
+    <img class="skull-icon" src="/skull-svgrepo-com.svg" />MORTS DE FAIM :
+    {{ deathByHunger }}
+  </p>
+  <p>
+    <img class="skull-icon" src="/skull-svgrepo-com.svg" />MORTS ETTOUFFÉS :
+    {{ deathBySuffocation }}
+  </p>
+</div>
+<div class="separator"></div>
+
+<div class="month-price">
+  <p>Prix du hamster ce mois-ci : {{ hamsterPrice }}fr</p>
+  <p>Prix de la cage : {{ cagePrice }}fr</p>
+  <p>Prix de la boite de nourriture : {{ foodPrice }} fr</p>
+</div>
+<div class="separator"></div>
+
+<h2>Actions</h2>
+<div class="one-action-container">
+  <div>
+    Vendre des hamsters mâles ?
+    <button id="oui" (click)="sellMale(true)" value="true">OUI</button>
+    <button (click)="sellMale(false)" value="false" id="non">NON</button>
+  </div>
+  @if (wantsToSellMale){
+  <div class="how-many-container">
+    <div>
+      Combien ?
+      <input
+        type="number"
+        [(ngModel)]="maleSold"
+        (ngModelChange)="setMaleSold($event)"
+      />
+    </div>
+    @if(maleSold > 0){<span class="yellow">+ {{ getPriceMaleSold() }}fr</span>}
+  </div>
+  }
+</div>
+<div class="one-action-container">
+  <div>
+    Vendre des hamsters femelles ?
+    <button (click)="sellFemale(true)" value="true" id="oui">OUI</button>
+    <button (click)="sellFemale(false)" value="false" id="non">NON</button>
+  </div>
+  @if (wantsToSellFemale){
+  <div class="how-many-container">
+    <div>
+      Combien ?
+      <input
+        type="number"
+        [(ngModel)]="femaleSold"
+        (ngModelChange)="setFemaleSold($event)"
+      />
+    </div>
+    @if(femaleSold > 0) {<span class="yellow"
+      >+ {{ getPriceFemaleSold() }}fr</span
+    >}
+  </div>
+  }
+</div>
+<div class="one-action-container">
+  <div>
+    Acheter des hamsters ? @if (!canBuyHamster) {
+    <p class="red">
+      Vous n'avez pas les fonds nécessaires
+      <button (click)="cancelBuyHamster()">Retour</button>
+    </p>
+
+    } @else {
+    <button (click)="buyHamster(true)" id="oui" value="true">OUI</button>
+    <button (click)="buyHamster(false)" id="non" value="false">NON</button>
+    }
+  </div>
+  @if (wantsToBuyHamster && canBuyHamster) {
+  <div class="how-many-container">
+    <div>
+      Combien ?
+      <input
+        type="number"
+        [ngModel]="hamstersToBuy"
+        (ngModelChange)="setHamstersToBuy($event)"
+      />
+    </div>
+    @if(hamstersToBuy > 0) {
+    <span class="yellow">- {{ getPriceHamstersBought() }}fr</span>
+    }
+  </div>
+  }
+</div>
+<div class="one-action-container">
+  <div>
+    Acheter cage ? @if (!canBuyCage) {
+    <p class="red">
+      Vous n'avez pas les fonds nécessaires
+      <button (click)="cancelBuyCage()">Retour</button>
+    </p>
+    } @else {
+    <button (click)="buyCage(true)" id="oui" value="true">OUI</button>
+    <button (click)="buyCage(false)" id="non" value="false">NON</button>}
+  </div>
+  @if (wantsToBuyCage && canBuyCage) {
+  <div class="how-many-container">
+    <div>
+      Combien ?
+      <input
+        type="number"
+        [(ngModel)]="cagesBought"
+        (ngModelChange)="setCagesBought($event)"
+      />
+    </div>
+    @if(canBuyCage && cagesBought > 0) {
+    <span class="yellow">- {{ getPriceCagesBought() }}fr</span>}
+  </div>
+  }
+</div>
+
+<div class="one-action-container">
+  <div>
+    Acheter nourriture ? @if (!canBuyFood){
+    <p class="red">
+      Vous n'avez pas les fonds nécessaires
+      <button (click)="cancelBuyFood()">Retour</button>
+    </p>
+    } @else {
+    <button (click)="buyFood(true)" id="oui" value="true">OUI</button>
+    <button (click)="buyFood(false)" id="non" value="false">NON</button>}
+  </div>
+  @if (wantsToBuyFood && canBuyFood) {
+  <div class="how-many-container">
+    <div>
+      Combien ?
+      <input
+        type="number"
+        [(ngModel)]="foodBought"
+        (ngModelChange)="setFoodBought($event)"
+      />
+    </div>
+    @if(foodBought>0 && foodBought > 0) {<span class="yellow"
+      >- {{ getPriceOfFoodBought() }} fr</span
+    >}
+  </div>
+  }
+</div>
+
+<div class="end-of-month-container">
+  Argent pour le prochain mois : {{ getMoneyForNextMonth() }} fr
+</div>
+@if (getMoneyForNextMonth() >= 0) {
+<button class="next-month-button" (click)="onNextMonth()">Prochain mois</button
+>}} @if (getMoneyForNextMonth()!<0 ) {
+<p class="red" id="no-neg">Vous ne pouvez pas être en négaitf !</p>
+}

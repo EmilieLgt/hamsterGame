@@ -1,0 +1,19 @@
+@if(!displayAction) {
+<p class="first-p">
+  L’objectif du jeu du hamster est de conserver le plus d’hamsters, le plus
+  longtemps possible.
+</p>
+<p>
+  À chaque mois, vous pouvez choisir d’acheter ou de vendre un ou plusieurs
+  hamsters, d’acheter de la nourriture, des cages ou de passer au mois suivant.
+</p>
+<p>
+  Le jeu se termine quand tous ces pauvres hamsters sont
+  <br />
+  <img src="/skull-svgrepo-com.svg" /> MORTS
+  <img src="/skull-svgrepo-com.svg" />.
+</p>
+
+<!-- <p>Battez votre record de 0 mois !</p> -->
+<button (click)="startGame()">Jouer</button>} @if(displayAction)
+{<app-month-update></app-month-update>}
