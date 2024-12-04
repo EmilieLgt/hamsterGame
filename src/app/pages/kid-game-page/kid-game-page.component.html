@@ -1,1 +1,30 @@
-<h1>Le jeu du hamster</h1>
+<div class="whole-kid-page">
+  <h1>Le jeu du hamster</h1>
+  <div class="game-box">
+    @if(isHealthy) {<img class="hamster2base" src="/okHamster.png" />}
+    @if(isSick) {
+    <img class="hamster2base" src="/sickHamster.webp" />
+    } @if(isBasic){
+    <img
+      class="hamster2base"
+      src="/cute-hamster-3d-icon-download-in-png-blend-fbx-gltf-file-formats--rodent-pet-animals-pack-animal-icons-9707799.webp"
+    />
+    }
+    <div class="button-container">
+      <button (click)="setHamsterSick()">
+        <img src="/pngtree-3d-burger-illustration-png-image_12494513.png" />
+      </button>
+      <button (click)="setHamsterSick()">
+        <img
+          src="/pizza-3d-icon-download-in-png-blend-fbx-gltf-file-formats--delicious-logo-slice-food-fast-and-drink-pack-breakfast-icons-6777459.webp"
+        />
+      </button>
+      <button (click)="setHamsterHealthy()">
+        <img src="/5220325.webp" />
+      </button>
+      <button (click)="setHamsterSick()">
+        <img src="/Hot_Dog_3D_Icon_Model_transparent_800_emp.webp" />
+      </button>
+    </div>
+  </div>
+</div>
