@@ -330,11 +330,6 @@ export class MonthUpdateComponent {
   // prochain mois
   onNextMonth(): void {
     window.scrollTo(0, 0);
-    // update le mois, mettre à jour prix
-    this.monthNumber++;
-    this.hamsterPrice = Math.floor(Math.random() * 10) + 1;
-    this.cagePrice = Math.floor(Math.random() * 10) + 1;
-    this.foodPrice = Math.floor(Math.random() * 10) + 1;
 
     // donne un hamster male ou femelle au hasard dans les hamsters achetés
     for (let i = 0; i < this.hamstersToBuy; i++) {
@@ -408,6 +403,11 @@ export class MonthUpdateComponent {
       this.maleAdultHasmters = 0;
       this.maleSmallHamsters = 0;
     }
+    // update le mois, mettre à jour prix
+    this.monthNumber++;
+    this.hamsterPrice = Math.floor(Math.random() * 10) + 1;
+    this.cagePrice = Math.floor(Math.random() * 10) + 1;
+    this.foodPrice = Math.floor(Math.random() * 10) + 1;
   }
 
   resetAll(): void {
