@@ -10,16 +10,6 @@
 
 <h2>Situation du mois : {{ monthNumber }}</h2>
 
-<div class="stocks">
-  <p class="green" id="one-line-stock">
-    <img class="icon-food" src="/foodIcon.webp" />NOURRITURE :
-    {{ foodStock }} kg
-  </p>
-  <p class="yellow" id="one-line-stock">
-    <img class="icon-money" src="/moneyIcon.webp" />ARGENT : {{ money }}fr
-  </p>
-</div>
-
 <div class="month-death">
   <p class="red">
     <img class="skull-icon" src="/skull-svgrepo-com.svg" />MORTS DE FAIM :
@@ -57,7 +47,17 @@
   <p>Prix de la cage : {{ cagePrice }}fr</p>
   <p>Prix de la boite de nourriture : {{ foodPrice }} fr</p>
 </div>
-<div class="separator"></div>
+
+<div class="stocks">
+  <p class="yellow" id="one-line-stock">
+    <img class="icon-money" src="/moneyIcon.webp" />ARGENT : {{ money }}fr
+  </p>
+  <p class="yellow" id="one-line-stock">
+    <img class="icon-food" src="/foodIcon.webp" />NOURRITURE :
+    {{ foodStock }} kg
+  </p>
+</div>
+
 <h2>Actions</h2>
 <div class="tips-button-container">
   @if(!displayTips) {<button class="help-button" (click)="handleTips()">
@@ -208,16 +208,17 @@
   }
 </div>
 
+@if (getMoneyForNextMonth() >= 0) {
+<button class="next-month-button" (click)="onNextMonth()">Prochain mois</button>
 <div class="end-of-month-container">
-  <p class="yellow">
+  <p class="yellow" id="money-next-month">
     Argent pour le prochain mois : {{ getMoneyForNextMonth() }} fr
   </p>
 </div>
-@if (getMoneyForNextMonth() >= 0) {
-<button class="next-month-button" (click)="onNextMonth()">Prochain mois</button
->}} @if (getMoneyForNextMonth()!<0 ) {
+}} @if (getMoneyForNextMonth()!<0 ) {
 <p class="red" id="no-neg">
   Vous ne pouvez pas être en négatif ! <br />Vendez des hamsters ou retirez des
   achats
 </p>
+
 }

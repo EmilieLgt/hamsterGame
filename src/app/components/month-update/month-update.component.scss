@@ -24,6 +24,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  font-size: 1.2em;
 }
 .month-death,
 .month-price {
@@ -81,9 +82,12 @@
 }
 .next-month-button {
   @extend .button-play-again;
-  margin-bottom: 3em;
+  margin-bottom: 2em;
+  margin-top: 1em;
 }
-
+#money-next-month {
+  margin-bottom: 2em;
+}
 .end-of-month-container {
   text-align: center;
   margin: 1em;
