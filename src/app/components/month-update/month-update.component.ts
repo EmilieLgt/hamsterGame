@@ -39,6 +39,13 @@ export class MonthUpdateComponent {
   deathBySuffocation: number = 0;
   deathByHunger: number = 0;
 
+  //
+  displayTips: boolean = false;
+
+  handleTips() {
+    this.displayTips = !this.displayTips;
+  }
+
   // calcul des morts
   calculateSuffocationDeaths(): void {
     const totalHamsters =
@@ -306,15 +313,19 @@ export class MonthUpdateComponent {
     this.foodBought = 0;
     this.wantsToBuyFood = false;
     this.setFoodBought(0);
+    this.canBuyFood = true;
   }
   cancelBuyHamster() {
     this.hamstersToBuy = 0;
     this.wantsToBuyHamster = false;
+    this.canBuyHamster = true;
+    this.setHamstersToBuy(0);
   }
   cancelBuyCage() {
     this.cagesBought = 0;
     this.wantsToBuyCage = false;
     this.setCagesBought(0);
+    this.canBuyCage = true;
   }
   // prochain mois
   onNextMonth(): void {
@@ -407,7 +418,7 @@ export class MonthUpdateComponent {
 
     // Stocks initiaux
     this.foodStock = 5;
-    this.money = 20;
+    this.money = 50;
     this.cage = 1;
 
     // Reset du jeu

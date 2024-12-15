@@ -2,7 +2,7 @@
 $black: rgb(12, 12, 12);
 $white: white;
 $green: rgb(36, 231, 36);
-$red: rgb(233, 36, 36);
+$red: #e92424;
 $yellow: rgb(244, 244, 28);
 
 * {
@@ -40,6 +40,10 @@ h2 {
 
 .red {
   color: $red;
+}
+
+.green {
+  color: $green;
 }
 
 .separator {
