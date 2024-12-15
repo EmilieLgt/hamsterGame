@@ -1,8 +1,12 @@
 <div class="whole-kid-page">
   <h1>Le jeu du hamster</h1>
   <div class="game-box">
-    @if(isHealthy) {<img class="hamster2base" src="/okHamster.png" />}
-    @if(isSick) {
+    @if(!play) {<button (click)="setPlay()" class="play-button">
+      <img src="/play-1000-svgrepo-com.svg" /></button
+    >} @if(play){ @if(isHealthy) {<img
+      class="hamster2base"
+      src="/okHamster.png"
+    />} @if(isSick) {
     <img class="hamster2base" src="/sickHamster.webp" />
     } @if(isBasic){
     <img
@@ -26,5 +30,9 @@
         <img src="/Hot_Dog_3D_Icon_Model_transparent_800_emp.webp" />
       </button>
     </div>
+    }
   </div>
+  <button (click)="goToMainPage()" class="play-button" id="home">
+    <img src="/home-3-svgrepo-com.svg" />
+  </button>
 </div>

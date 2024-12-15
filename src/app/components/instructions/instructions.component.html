@@ -16,6 +16,5 @@
 
 <!-- <p>Battez votre record de 0 mois !</p> -->
 <button (click)="startGame()">Jouer</button>} @if(displayAction)
-{<app-month-update></app-month-update>}
-
-<button (click)="goToKidPage()">Kids</button>
+{<app-month-update></app-month-update>} @if(!displayAction) {
+<button (click)="goToKidPage()">Kids</button>}

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-kid-game-page',
@@ -8,6 +9,12 @@ import { Component } from '@angular/core';
   styleUrl: './kid-game-page.component.scss',
 })
 export class KidGamePageComponent {
+  router: Router = inject(Router);
+  goToMainPage() {
+    this.router.navigate(['/']);
+  }
+
+  play: boolean = false;
   isSick: boolean = false;
   isHealthy: boolean = false;
   isBasic: boolean = true;
@@ -20,5 +27,9 @@ export class KidGamePageComponent {
     this.isHealthy = true;
     this.isBasic = false;
     this.isSick = false;
+  }
+
+  setPlay() {
+    this.play = true;
   }
 }
