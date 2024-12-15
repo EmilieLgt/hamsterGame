@@ -11,15 +11,32 @@
   margin: 2em;
 }
 
+.stocks {
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 1em;
+}
+#one-line-stock {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
 .month-death,
 .month-price {
   margin-left: 2em;
 }
 
 .month-death {
+  margin-top: 1em;
   p {
     display: flex;
     align-items: center;
+    justify-content: start;
+    margin-left: 25%;
   }
 }
 .month-price {
@@ -64,7 +81,7 @@
 }
 .next-month-button {
   @extend .button-play-again;
-  margin-bottom: 1em;
+  margin-bottom: 3em;
 }
 
 .end-of-month-container {
@@ -106,4 +123,31 @@
 
 #no-neg {
   text-align: center;
+  margin-bottom: 2em;
+}
+
+.tips-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  margin-right: 2em;
+}
+.help-button {
+  border-radius: 100%;
+  background-color: $black;
+  color: $white;
+  border: 2px solid $white;
+  height: 30px;
+  width: 30px;
+}
+
+.help-container {
+  border-radius: 25px;
+  border: 3px solid $white;
+  padding: 1em;
+  margin-right: 2em;
+  margin-left: 2em;
+  .one-line-tip {
+    margin: 2em 0;
+  }
 }
