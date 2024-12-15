@@ -4,15 +4,19 @@ $yellow: rgb(61, 136, 146);
 $green: rgb(187, 223, 228);
 
 .whole-kid-page {
-  width: 100vw;
-  height: 100vh;
   background-color: $purple;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1em;
 }
 h1 {
   font-family: "Sniglet";
+  font-size: 3em;
   color: $yellow;
   text-align: center;
-  padding-top: 1em;
+  padding-top: 0.5em;
   text-shadow: 1px 1px 5px #dff703, 1px 2px 1px #990fcb, 1px 3px 1px #990fcb,
     1px 5px 1px #deb3ee;
 }
@@ -27,7 +31,6 @@ h1 {
   margin: 1em auto;
   border-radius: 25px;
   padding: 1em;
-  height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,6 +41,15 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+.play-button {
+  background-color: $yellow;
+  color: white;
+  width: 90px;
+  height: 90px;
+  img {
+    width: 40px;
+  }
 }
 button {
   img {
