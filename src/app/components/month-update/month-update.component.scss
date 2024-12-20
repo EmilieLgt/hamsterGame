@@ -26,18 +26,19 @@
   align-items: center;
   font-size: 1.2em;
 }
-.month-death,
+
 .month-price {
   margin-left: 2em;
 }
 
 .month-death {
   margin-top: 1em;
+  display: flex;
+  justify-content: space-evenly;
   p {
     display: flex;
     align-items: center;
     justify-content: start;
-    margin-left: 25%;
   }
 }
 .month-price {
@@ -77,9 +78,6 @@
   color: $green;
 }
 
-#non {
-  color: red;
-}
 .next-month-button {
   @extend .button-play-again;
   margin-bottom: 2em;
@@ -153,5 +151,25 @@
   margin-left: 2em;
   .one-line-tip {
     margin: 2em 0;
+  }
+}
+
+.records-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: start;
+  border: 2px solid $yellow;
+  padding: 0.5em;
+  width: 30%;
+  margin: 2em auto 0 auto;
+  border-radius: 10px;
+  p {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+  }
+  img {
+    height: 25px;
   }
 }
