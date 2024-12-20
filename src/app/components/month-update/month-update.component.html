@@ -1,9 +1,22 @@
+<div class="records-container">
+  <p><img src="first-first-place-svgrepo-com.svg" /> {{ monthRecord }} mois</p>
+
+  <p>
+    <img src="skull-svgrepo-com.svg" />
+    {{ totalHamstersDead }}
+  </p>
+</div>
+
 @if(endOfGame) {
 <div class="game-over">
   <h3>GAME OVER</h3>
   <p class="red">TOUS LES HAMSTERS SONT MORTS</p>
   <p class="lol">La SPA, L214, PETA et Brigitte Bardot seront informées...</p>
-  <p>Vous avez tenu {{ monthNumber - 1 }} mois.</p>
+  <p>Vous avez tenu {{ monthNumber }} mois.</p>
+  <p>
+    Vous avez assassiné {{ maleHamsterDeadAll + femaleHamsterDeadAll }}
+    hamsters.
+  </p>
   <button class="next-month-button" (click)="resetAll()">Rejouer</button>
 </div>
 } @else {
@@ -12,11 +25,11 @@
 
 <div class="month-death">
   <p class="red">
-    <img class="skull-icon" src="/skull-svgrepo-com.svg" />MORTS DE FAIM :
+    <img class="skull-icon" src="/skull-svgrepo-com.svg" />MORTS DE FAIM
     {{ deathByHunger }}
   </p>
   <p class="red">
-    <img class="skull-icon" src="/skull-svgrepo-com.svg" />MORTS ETTOUFFÉS :
+    <img class="skull-icon" src="/skull-svgrepo-com.svg" />MORTS ETTOUFFÉS
     {{ deathBySuffocation }}
   </p>
 </div>
@@ -213,6 +226,9 @@
 <div class="end-of-month-container">
   <p class="yellow" id="money-next-month">
     Argent pour le prochain mois : {{ getMoneyForNextMonth() }} fr
+  </p>
+  <p class="yellow" id="money-next-month">
+    Nourriture pour le prochain mois : {{ getFoodForNextMonth() }} kg
   </p>
 </div>
 }} @if (getMoneyForNextMonth()!<0 ) {

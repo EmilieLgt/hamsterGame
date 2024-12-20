@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-month-update',
   standalone: true,
@@ -20,13 +21,44 @@ export class MonthUpdateComponent {
 
   // fin du jeu
   endOfGame: boolean = false;
+
   // le mois
   monthNumber: number = 1;
+
   // nombre d'hamsters + hamster par cage
   femaleAdultHasmters: number = 2;
   maleAdultHasmters: number = 2;
   femaleSmallHamsters: number = 0;
   maleSmallHamsters: number = 0;
+
+  // nombre de morts
+  deathBySuffocation: number = 0;
+  deathByHunger: number = 0;
+  maleHamsterDeadAll: number = 0;
+  femaleHamsterDeadAll: number = 0;
+
+  // Variables d'interface
+  displayTips: boolean = false;
+  showRandomEvent: boolean = false;
+
+  // Variables d'achat/vente
+  wantsToBuyHamster: boolean = false;
+  hamstersToBuy: number = 0;
+  canBuyHamster: boolean = true;
+
+  wantsToBuyFood: boolean = false;
+  foodBought: number = 0;
+  canBuyFood: boolean = true;
+
+  wantsToBuyCage: boolean = false;
+  cagesBought: number = 0;
+  canBuyCage: boolean = true;
+
+  wantsToSellMale: boolean = false;
+  maleSold: number = 0;
+
+  wantsToSellFemale: boolean = false;
+  femaleSold: number = 0;
 
   hamstersByCage: number =
     (this.femaleAdultHasmters +
@@ -35,25 +67,19 @@ export class MonthUpdateComponent {
       this.maleSmallHamsters) /
     this.cage;
 
-  // nombre de morts
-  deathBySuffocation: number = 0;
-  deathByHunger: number = 0;
-
-  //
-  displayTips: boolean = false;
-
+  // Gestion des conseils
   handleTips() {
     this.displayTips = !this.displayTips;
   }
 
-  // calcul des morts
+  // Calcul des morts par suffocation
   calculateSuffocationDeaths(): void {
     const totalHamsters =
       this.femaleAdultHasmters +
       this.maleAdultHasmters +
       this.femaleSmallHamsters +
       this.maleSmallHamsters;
-    const maxCapacity = this.cage * 4; // Augmenté de 3 à 4 hamsters par cage
+    const maxCapacity = this.cage * 4;
 
     if (totalHamsters > maxCapacity) {
       const deathsNeeded = Math.min(
@@ -61,109 +87,89 @@ export class MonthUpdateComponent {
         this.maleAdultHasmters + this.femaleAdultHasmters
       );
 
-      // Si on a des mâles et des femelles, on choisit au hasard
       if (this.maleAdultHasmters > 0 && this.femaleAdultHasmters > 0) {
         for (let i = 0; i < deathsNeeded; i++) {
           if (Math.random() < 0.5 && this.maleAdultHasmters > 0) {
             this.maleAdultHasmters--;
             this.deathBySuffocation++;
+            this.maleHamsterDeadAll++;
           } else if (this.femaleAdultHasmters > 0) {
             this.femaleAdultHasmters--;
             this.deathBySuffocation++;
+            this.femaleHamsterDeadAll++;
           } else if (this.maleAdultHasmters > 0) {
             this.maleAdultHasmters--;
             this.deathBySuffocation++;
+            this.maleHamsterDeadAll++;
           }
         }
-      }
-      // Si on n'a que des mâles
-      else if (this.maleAdultHasmters > 0) {
+      } else if (this.maleAdultHasmters > 0) {
         this.deathBySuffocation = Math.min(
           deathsNeeded,
           this.maleAdultHasmters
         );
         this.maleAdultHasmters -= this.deathBySuffocation;
-      }
-      // Si on n'a que des femelles
-      else if (this.femaleAdultHasmters > 0) {
+        this.maleHamsterDeadAll += this.deathBySuffocation;
+      } else if (this.femaleAdultHasmters > 0) {
         this.deathBySuffocation = Math.min(
           deathsNeeded,
           this.femaleAdultHasmters
         );
         this.femaleAdultHasmters -= this.deathBySuffocation;
+        this.femaleHamsterDeadAll += this.deathBySuffocation;
       }
     }
   }
 
-  calculateStarvationDeaths(): void {
-    if (this.foodStock === 0) {
-      // Calculer le nombre total de hamsters adultes qui vont mourir
-      const totalAdultHamsters =
-        this.maleAdultHasmters + this.femaleAdultHasmters;
-      const deathsNeeded = Math.min(
-        totalAdultHamsters,
-        Math.ceil(totalAdultHamsters * 0.5)
-      ); // 50% des hamsters meurent de faim
-
-      // Si on a des mâles et des femelles, on choisit au hasard
-      if (this.maleAdultHasmters > 0 && this.femaleAdultHasmters > 0) {
-        for (let i = 0; i < deathsNeeded; i++) {
-          if (Math.random() < 0.5 && this.maleAdultHasmters > 0) {
-            this.maleAdultHasmters--;
-            this.deathByHunger++;
-          } else if (this.femaleAdultHasmters > 0) {
-            this.femaleAdultHasmters--;
-            this.deathByHunger++;
-          } else if (this.maleAdultHasmters > 0) {
-            this.maleAdultHasmters--;
-            this.deathByHunger++;
-          }
-        }
-      }
-      // Si on n'a que des mâles
-      else if (this.maleAdultHasmters > 0) {
-        this.deathByHunger = Math.min(deathsNeeded, this.maleAdultHasmters);
-        this.maleAdultHasmters -= this.deathByHunger;
-      }
-      // Si on n'a que des femelles
-      else if (this.femaleAdultHasmters > 0) {
-        this.deathByHunger = Math.min(deathsNeeded, this.femaleAdultHasmters);
-        this.femaleAdultHasmters -= this.deathByHunger;
-      }
-    }
-  }
-  // calcul de la nourriture mangée
+  // Calcul de la consommation de nourriture
   updateFoodConsumption(): void {
     const adultFoodNeeded =
-      (this.femaleAdultHasmters + this.maleAdultHasmters) * 1; // 1kg adulte
+      (this.femaleAdultHasmters + this.maleAdultHasmters) * 1;
     const smallFoodNeeded =
-      (this.femaleSmallHamsters + this.maleSmallHamsters) * 0.5; // 500g enfant
+      (this.femaleSmallHamsters + this.maleSmallHamsters) * 0.5;
     const totalFoodNeeded = adultFoodNeeded + smallFoodNeeded;
 
     if (this.foodStock < totalFoodNeeded) {
-      this.deathByHunger = this.femaleAdultHasmters;
+      const hamstersCanFeed = Math.floor(this.foodStock);
+      const hamstersToDie =
+        this.femaleAdultHasmters + this.maleAdultHasmters - hamstersCanFeed;
+
+      if (hamstersToDie > 0) {
+        const femalesToDie = Math.min(
+          Math.ceil(hamstersToDie / 2),
+          this.femaleAdultHasmters
+        );
+        const malesToDie = Math.min(
+          hamstersToDie - femalesToDie,
+          this.maleAdultHasmters
+        );
+
+        this.deathByHunger = femalesToDie + malesToDie;
+        this.femaleHamsterDeadAll += femalesToDie;
+        this.maleHamsterDeadAll += malesToDie;
+
+        this.femaleAdultHasmters -= femalesToDie;
+        this.maleAdultHasmters -= malesToDie;
+      }
+
       this.foodStock = 0;
     } else {
       this.foodStock = this.foodStock - totalFoodNeeded;
     }
   }
 
-  // calcul reproduction (à revoir fait par gpt)
+  // Gestion de la reproduction
   handleBreeding(): void {
-    // Only adult hamsters can breed
     const potentialMothers = Math.min(
       this.femaleAdultHasmters,
       this.maleAdultHasmters
     );
 
     for (let i = 0; i < potentialMothers; i++) {
-      // 40% chance of successful breeding per pair
       if (Math.random() < 0.5) {
-        // Generate 2 à 4 bébés
         const litterSize = Math.floor(Math.random() * 2) + 1;
 
         for (let j = 0; j < litterSize; j++) {
-          // 50/50 chance for each baby's gender
           if (Math.random() < 0.5) {
             this.maleSmallHamsters++;
           } else {
@@ -174,7 +180,7 @@ export class MonthUpdateComponent {
     }
   }
 
-  // hamster par cage calcul
+  // Mise à jour du nombre d'hamsters par cage
   updateHamstersByCage(): void {
     this.cage += this.cagesBought;
     this.hamstersByCage =
@@ -184,16 +190,13 @@ export class MonthUpdateComponent {
         this.maleSmallHamsters) /
       this.cage;
   }
-  // vérifier si assez d'argent
+
+  // Utilitaires
   calculateEnoughMoney(value: number): number {
     return Math.max(0, Math.floor(value));
   }
 
-  // achat hamster (sexe au hasard)
-  wantsToBuyHamster: boolean = false;
-  hamstersToBuy: number = 0;
-  canBuyHamster: boolean = true;
-
+  // Gestion des achats d'hamsters
   buyHamster(boolean: boolean): void {
     this.wantsToBuyHamster = boolean;
     this.canBuyHamster = this.money >= this.hamsterPrice;
@@ -201,103 +204,77 @@ export class MonthUpdateComponent {
 
   setHamstersToBuy(value: number): void {
     this.hamstersToBuy = this.calculateEnoughMoney(value);
-    // update canBuyHamster avec le prix total -> si c'est inférieur à la money ça donne false
     this.canBuyHamster = this.money >= this.hamstersToBuy * this.hamsterPrice;
   }
+
   getPriceHamstersBought(): number {
     return this.hamstersToBuy * this.hamsterPrice;
   }
 
-  // achat nourriture
-  wantsToBuyFood: boolean = false;
-  foodBought: number = 0;
-  canBuyFood: boolean = true;
+  // Gestion des achats de nourriture
   buyFood(boolean: boolean): void {
-    if (boolean === true) {
-      this.wantsToBuyFood = true;
-    } else {
-      this.wantsToBuyFood = false;
-    }
-    if (this.money > this.foodPrice) {
-      this.canBuyCage;
-    }
+    this.wantsToBuyFood = boolean;
+    this.canBuyFood = this.money >= this.foodPrice;
   }
+
   setFoodBought(value: number): void {
     this.foodBought = this.calculateEnoughMoney(value);
     this.canBuyFood = this.money >= this.foodBought * this.foodPrice;
   }
+
   getPriceOfFoodBought(): number {
     return this.foodBought * this.foodPrice;
   }
 
-  // achat cage (faire apparaitre le combien ? + gérer le prix)
-  wantsToBuyCage: boolean = false;
-  cagesBought: number = 0;
-  canBuyCage: boolean = true;
+  // Gestion des achats de cages
   buyCage(boolean: boolean): void {
     if (boolean === true) {
       this.wantsToBuyCage = true;
-    } else if (boolean === false) {
+    } else {
       this.wantsToBuyCage = false;
     }
-    if (this.money > this.cagePrice) {
-      this.canBuyCage;
-    }
-    if (this.money < this.cagePrice * this.cagesBought) {
-      this.canBuyCage = false;
-    }
+    this.canBuyCage = this.money >= this.cagePrice;
   }
+
   setCagesBought(value: number): void {
     this.cagesBought = this.calculateEnoughMoney(value);
     this.canBuyCage = this.money >= this.cagesBought * this.cagePrice;
   }
+
   getPriceCagesBought(): number {
-    if (this.canBuyCage) {
-      return this.cagesBought * this.cagePrice;
-    } else return 0;
+    return this.canBuyCage ? this.cagesBought * this.cagePrice : 0;
   }
 
-  // vendre males
-  wantsToSellMale: boolean = false;
-  maleSold: number = 0;
+  // Gestion des ventes d'hamsters
   sellMale(boolean: boolean): void {
-    if (boolean === true) {
-      this.wantsToSellMale = true;
-    } else {
-      this.wantsToSellMale = false;
-      console.log('hi in false');
-    }
+    this.wantsToSellMale = boolean;
   }
+
   setMaleSold(value: number): void {
     this.maleSold = this.calculateEnoughMoney(
       Math.min(value, this.maleAdultHasmters)
     );
   }
+
   getPriceMaleSold(): number {
     return this.hamsterPrice * this.maleSold;
   }
 
-  // vendre femelles
-  wantsToSellFemale: boolean = false;
-  femaleSold: number = 0;
   sellFemale(boolean: boolean): void {
-    if (boolean === true) {
-      this.wantsToSellFemale = true;
-    } else {
-      this.wantsToSellFemale = false;
-      console.log('hi in false');
-    }
+    this.wantsToSellFemale = boolean;
   }
+
   setFemaleSold(value: number): void {
     this.femaleSold = this.calculateEnoughMoney(
       Math.min(value, this.femaleAdultHasmters)
     );
   }
+
   getPriceFemaleSold(): number {
     return this.hamsterPrice * this.femaleSold;
   }
 
-  // calcul du coup / depense du mois
+  // Calcul des finances
   getMoneyForNextMonth(): number {
     return (
       this.money +
@@ -308,30 +285,38 @@ export class MonthUpdateComponent {
       this.getPriceHamstersBought()
     );
   }
+  getFoodForNextMonth(): number {
+    return this.foodStock + this.foodBought;
+  }
 
+  // Annulation des actions
   cancelBuyFood() {
     this.foodBought = 0;
     this.wantsToBuyFood = false;
-    this.setFoodBought(0);
     this.canBuyFood = true;
   }
+
   cancelBuyHamster() {
     this.hamstersToBuy = 0;
     this.wantsToBuyHamster = false;
     this.canBuyHamster = true;
-    this.setHamstersToBuy(0);
   }
+
   cancelBuyCage() {
     this.cagesBought = 0;
     this.wantsToBuyCage = false;
-    this.setCagesBought(0);
     this.canBuyCage = true;
   }
-  // prochain mois
+
+  // Passage au mois suivant
   onNextMonth(): void {
     window.scrollTo(0, 0);
 
-    // donne un hamster male ou femelle au hasard dans les hamsters achetés
+    // Garder les valeurs des morts avant ce mois
+    const previousMaleDeaths = this.maleHamsterDeadAll;
+    const previousFemaleDeaths = this.femaleHamsterDeadAll;
+
+    // Attribution des nouveaux hamsters achetés
     for (let i = 0; i < this.hamstersToBuy; i++) {
       if (Math.random() < 0.5) {
         this.maleAdultHasmters++;
@@ -340,41 +325,42 @@ export class MonthUpdateComponent {
       }
     }
 
-    // reset les morts
+    // Reset des compteurs de morts
     this.deathByHunger = 0;
     this.deathBySuffocation = 0;
-    // calcule les morts
-    this.calculateSuffocationDeaths();
-    this.calculateStarvationDeaths();
 
-    // Déplacer les petits vers les adultes
+    // Mise à jour de la nourriture et morts
+    this.foodStock += this.foodBought;
+    this.updateFoodConsumption();
+    this.calculateSuffocationDeaths();
+
+    // Faire grandir les petits
     this.femaleAdultHasmters += this.femaleSmallHamsters;
     this.maleAdultHasmters += this.maleSmallHamsters;
-
-    // Réinitialiser le nombre de petits
     this.femaleSmallHamsters = 0;
     this.maleSmallHamsters = 0;
 
-    // calcule la reproduction
+    // Compter seulement les nouveaux morts de ce mois
+    const newMaleDeaths = this.maleHamsterDeadAll - previousMaleDeaths;
+    const newFemaleDeaths = this.femaleHamsterDeadAll - previousFemaleDeaths;
+    this.allHamstersDead += newMaleDeaths + newFemaleDeaths;
+
+    // Reproduction
     this.handleBreeding();
-    // update nbre de male et femelle, ajout des enfants vers les adultes
+
+    // Mise à jour après ventes
     this.femaleAdultHasmters = this.calculateEnoughMoney(
-      this.femaleAdultHasmters - this.femaleSold - this.deathByHunger
+      this.femaleAdultHasmters - this.femaleSold
     );
     this.maleAdultHasmters = this.calculateEnoughMoney(
-      this.maleAdultHasmters -
-        this.maleSold -
-        this.deathByHunger -
-        this.deathBySuffocation
+      this.maleAdultHasmters - this.maleSold
     );
 
-    // update des stocks
-    this.updateFoodConsumption();
-    this.foodStock += this.foodBought;
+    // Mise à jour des stocks
     this.money = this.getMoneyForNextMonth();
     this.cage += this.cagesBought;
 
-    // reset les achats et enlève input
+    // Reset des actions
     this.hamstersToBuy = 0;
     this.wantsToBuyHamster = false;
     this.cagesBought = 0;
@@ -386,7 +372,7 @@ export class MonthUpdateComponent {
     this.femaleSold = 0;
     this.wantsToSellFemale = false;
 
-    // recalcule les hamsters par cage
+    // Mise à jour finale
     this.updateHamstersByCage();
 
     // Vérification de fin de jeu
@@ -397,20 +383,46 @@ export class MonthUpdateComponent {
       this.maleSmallHamsters <= 0
     ) {
       this.endOfGame = true;
-      // Forcer les valeurs à 0 pour être sûr
       this.femaleAdultHasmters = 0;
       this.femaleSmallHamsters = 0;
       this.maleAdultHasmters = 0;
       this.maleSmallHamsters = 0;
     }
-    // update le mois, mettre à jour prix
+
+    // Mise à jour du mois et des prix
     this.monthNumber++;
     this.hamsterPrice = Math.floor(Math.random() * 10) + 1;
     this.cagePrice = Math.floor(Math.random() * 10) + 1;
     this.foodPrice = Math.floor(Math.random() * 10) + 1;
   }
 
+  // gère le record de mois
+  monthRecord: number = 0;
+  allHamstersDead: number = 0;
+  totalHamstersDead: number = 0;
+  ngOnInit() {
+    // record mois
+    const savedMonthRecord: any = localStorage.getItem('monthRecord');
+    this.monthRecord = JSON.parse(savedMonthRecord);
+    // morts
+    const savedDeaths = localStorage.getItem('totalDeaths');
+    this.totalHamstersDead = savedDeaths ? JSON.parse(savedDeaths) : 0;
+    this.allHamstersDead = 0;
+  }
+  saveToLocalStorage() {
+    // record mois
+    if (this.monthNumber > this.monthRecord) {
+      localStorage.setItem('monthRecord', JSON.stringify(this.monthNumber));
+    }
+    // mise à jour morts
+    console.log('ceux du mois ' + this.allHamstersDead);
+    console.log('tous' + this.totalHamstersDead);
+    this.totalHamstersDead += this.allHamstersDead;
+    localStorage.setItem('totalDeaths', JSON.stringify(this.totalHamstersDead));
+  }
+  // Réinitialisation du jeu
   resetAll(): void {
+    this.saveToLocalStorage();
     // Prix des items (random entre 1 et 10)
     this.hamsterPrice = Math.floor(Math.random() * 10) + 5;
     this.cagePrice = Math.floor(Math.random() * 10) + 1;
@@ -434,6 +446,8 @@ export class MonthUpdateComponent {
     // Reset des morts
     this.deathBySuffocation = 0;
     this.deathByHunger = 0;
+    this.maleHamsterDeadAll = 0;
+    this.femaleHamsterDeadAll = 0;
 
     // Reset des achats/ventes
     this.wantsToBuyHamster = false;
@@ -456,5 +470,7 @@ export class MonthUpdateComponent {
 
     // Recalcul des hamsters par cage
     this.updateHamstersByCage();
+    this.ngOnInit();
+    this.allHamstersDead = 0;
   }
 }
