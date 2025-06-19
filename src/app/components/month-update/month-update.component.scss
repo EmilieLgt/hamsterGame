@@ -160,7 +160,7 @@
   align-items: start;
   border: 2px solid $yellow;
   padding: 0.5em;
-  width: 30%;
+  width: 50%;
   margin: 2em auto 0 auto;
   border-radius: 10px;
   p {
@@ -172,4 +172,11 @@
   img {
     height: 25px;
   }
+}
+.bilan-game-over {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: $yellow;
+  margin-top: 1em;
 }

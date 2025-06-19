@@ -1,15 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
+import { CardSelectorComponent } from '../cards/card-selector/card-selector.component';
+import { IGameEvent } from '../../models/bonus.model';
 @Component({
   selector: 'app-month-update',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CardSelectorComponent],
   templateUrl: './month-update.component.html',
   styleUrl: './month-update.component.scss',
 })
-export class MonthUpdateComponent {
-  // prix des hamsters, cages, nourriture entre 1 et 10 random
+export class MonthUpdateComponent implements OnInit {
   hamsterPrice: number = Math.floor(Math.random() * 10) + 5;
   cagePrice: number = Math.floor(Math.random() * 10) + 1;
   foodPrice: number = Math.floor(Math.random() * 10) + 1;
@@ -21,8 +21,6 @@ export class MonthUpdateComponent {
 
   // fin du jeu
   endOfGame: boolean = false;
-
-  // le mois
   monthNumber: number = 1;
 
   // nombre d'hamsters + hamster par cage
@@ -37,11 +35,11 @@ export class MonthUpdateComponent {
   maleHamsterDeadAll: number = 0;
   femaleHamsterDeadAll: number = 0;
 
-  // Variables d'interface
+  // variables d'interface
   displayTips: boolean = false;
   showRandomEvent: boolean = false;
 
-  // Variables d'achat/vente
+  // variables d'achat/vente
   wantsToBuyHamster: boolean = false;
   hamstersToBuy: number = 0;
   canBuyHamster: boolean = true;
@@ -67,7 +65,16 @@ export class MonthUpdateComponent {
       this.maleSmallHamsters) /
     this.cage;
 
-  // Gestion des conseils
+  monthRecord: number = 0;
+  allHamstersDead: number = 0;
+  totalHamstersDead: number = 0;
+  hamsterSold: number = 0;
+
+  // propriétés pour les événements
+  showGameEvent: boolean = false;
+  eventProcessed: boolean = false;
+  currentMonthEffect: IGameEvent | null = null;
+
   handleTips() {
     this.displayTips = !this.displayTips;
   }
@@ -254,6 +261,7 @@ export class MonthUpdateComponent {
     this.maleSold = this.calculateEnoughMoney(
       Math.min(value, this.maleAdultHasmters)
     );
+    this.hamsterSold += value;
   }
 
   getPriceMaleSold(): number {
@@ -268,6 +276,7 @@ export class MonthUpdateComponent {
     this.femaleSold = this.calculateEnoughMoney(
       Math.min(value, this.femaleAdultHasmters)
     );
+    this.hamsterSold += value;
   }
 
   getPriceFemaleSold(): number {
@@ -285,6 +294,7 @@ export class MonthUpdateComponent {
       this.getPriceHamstersBought()
     );
   }
+
   getFoodForNextMonth(): number {
     return this.foodStock + this.foodBought;
   }
@@ -308,8 +318,100 @@ export class MonthUpdateComponent {
     this.canBuyCage = true;
   }
 
-  // Passage au mois suivant
+  // Evenements
+  isEventMonth(): boolean {
+    return this.monthNumber % 4 === 0 && !this.currentMonthEffect;
+  }
+
+  onGameEventApplied(event: IGameEvent) {
+    this.currentMonthEffect = event;
+    this.applyGameEvent(event);
+  }
+
+  private applyGameEvent(event: IGameEvent) {
+    switch (event.effect.type) {
+      case 'money':
+        this.money = Math.max(0, this.money + event.effect.value);
+        break;
+
+      case 'food':
+        this.foodStock = Math.max(0, this.foodStock + event.effect.value);
+        break;
+
+      case 'hamster_death':
+        this.applyHamsterDeath(event.effect.value);
+        break;
+
+      case 'hamster_birth':
+        this.applyHamsterBirth(event.effect.value);
+        break;
+
+      case 'price_modifier':
+        this.applyPriceModifier(event.effect.value, event.effect.target);
+        break;
+    }
+  }
+
+  private applyHamsterDeath(deaths: number) {
+    for (let i = 0; i < deaths; i++) {
+      if (this.maleAdultHasmters > 0 && Math.random() < 0.5) {
+        this.maleAdultHasmters--;
+        this.maleHamsterDeadAll++;
+      } else if (this.femaleAdultHasmters > 0) {
+        this.femaleAdultHasmters--;
+        this.femaleHamsterDeadAll++;
+      }
+    }
+  }
+
+  private applyHamsterBirth(bonus: number) {
+    const potentialMothers = Math.min(
+      this.femaleAdultHasmters,
+      this.maleAdultHasmters
+    );
+
+    for (let i = 0; i < potentialMothers; i++) {
+      const baseChance = 0.5;
+      const modifiedChance =
+        bonus > 0 ? baseChance + 0.3 : Math.max(0.1, baseChance - 0.3);
+
+      if (Math.random() < modifiedChance) {
+        const litterSize = Math.floor(Math.random() * (bonus > 0 ? 3 : 2)) + 1;
+
+        for (let j = 0; j < litterSize; j++) {
+          if (Math.random() < 0.5) {
+            this.maleSmallHamsters++;
+          } else {
+            this.femaleSmallHamsters++;
+          }
+        }
+      }
+    }
+  }
+
+  private applyPriceModifier(modifier: number, target?: string) {
+    if (target === 'hamster' || target === 'all') {
+      this.hamsterPrice = Math.floor(this.hamsterPrice * modifier);
+    }
+    if (target === 'cage' || target === 'all') {
+      this.cagePrice = Math.floor(this.cagePrice * modifier);
+    }
+    if (target === 'food' || target === 'all') {
+      this.foodPrice = Math.floor(this.foodPrice * modifier);
+    }
+  }
+
+  continueToActions() {
+    this.showGameEvent = false;
+  }
+  // check si mois à évènement
   onNextMonth(): void {
+    // Vérifier si c'est un mois d'événement au début du mois
+    if (this.isEventMonth() && !this.currentMonthEffect) {
+      this.showGameEvent = true;
+      return; // Stopper ici, attendre la sélection de l'événement
+    }
+
     window.scrollTo(0, 0);
 
     // Garder les valeurs des morts avant ce mois
@@ -394,12 +496,14 @@ export class MonthUpdateComponent {
     this.hamsterPrice = Math.floor(Math.random() * 10) + 1;
     this.cagePrice = Math.floor(Math.random() * 10) + 1;
     this.foodPrice = Math.floor(Math.random() * 10) + 1;
+
+    // Reset l'événement pour le prochain cycle
+    if (this.monthNumber % 4 === 1) {
+      this.eventProcessed = false;
+      this.currentMonthEffect = null;
+    }
   }
 
-  // gère le record de mois
-  monthRecord: number = 0;
-  allHamstersDead: number = 0;
-  totalHamstersDead: number = 0;
   ngOnInit() {
     // record mois
     const savedMonthRecord: any = localStorage.getItem('monthRecord');
@@ -409,18 +513,17 @@ export class MonthUpdateComponent {
     this.totalHamstersDead = savedDeaths ? JSON.parse(savedDeaths) : 0;
     this.allHamstersDead = 0;
   }
+
   saveToLocalStorage() {
     // record mois
     if (this.monthNumber > this.monthRecord) {
       localStorage.setItem('monthRecord', JSON.stringify(this.monthNumber));
     }
     // mise à jour morts
-    console.log('ceux du mois ' + this.allHamstersDead);
-    console.log('tous' + this.totalHamstersDead);
     this.totalHamstersDead += this.allHamstersDead;
     localStorage.setItem('totalDeaths', JSON.stringify(this.totalHamstersDead));
   }
-  // Réinitialisation du jeu
+
   resetAll(): void {
     this.saveToLocalStorage();
     // Prix des items (random entre 1 et 10)
@@ -468,9 +571,14 @@ export class MonthUpdateComponent {
     this.wantsToSellFemale = false;
     this.femaleSold = 0;
 
-    // Recalcul des hamsters par cage
+    // Reset des événements
+    this.showGameEvent = false;
+    this.eventProcessed = false;
+    this.currentMonthEffect = null;
+
     this.updateHamstersByCage();
     this.ngOnInit();
     this.allHamstersDead = 0;
+    this.hamsterSold = 0;
   }
 }

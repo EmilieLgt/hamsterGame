@@ -10,7 +10,7 @@ describe('MonthUpdateComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         FormsModule,
-        MonthUpdateComponent, // Importé au lieu d'être déclaré car c'est un composant standalone
+        MonthUpdateComponent, 
       ],
     }).compileComponents();
 
@@ -35,8 +35,7 @@ describe('MonthUpdateComponent', () => {
   });
 
   it('devrait calculer correctement les morts par suffocation', () => {
-    // Configuration initiale avec trop de hamsters pour une cage
-    component.cage = 1; // 1 cage peut contenir 4 hamsters
+    component.cage = 1; 
     component.maleAdultHasmters = 3;
     component.femaleAdultHasmters = 3;
 

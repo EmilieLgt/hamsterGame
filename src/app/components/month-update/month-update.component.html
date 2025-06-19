@@ -1,6 +1,5 @@
 <div class="records-container">
   <p><img src="first-first-place-svgrepo-com.svg" /> {{ monthRecord }} mois</p>
-
   <p>
     <img src="skull-svgrepo-com.svg" />
     {{ totalHamstersDead }}
@@ -13,10 +12,16 @@
   <p class="red">TOUS LES HAMSTERS SONT MORTS</p>
   <p class="lol">La SPA, L214, PETA et Brigitte Bardot seront informées...</p>
   <p>Vous avez tenu {{ monthNumber }} mois.</p>
-  <p>
-    Vous avez assassiné {{ maleHamsterDeadAll + femaleHamsterDeadAll }}
-    hamsters.
-  </p>
+  <div class="bilan-game-over">
+    <p>
+      Hamsters morts : {{ maleHamsterDeadAll + femaleHamsterDeadAll }} |
+      Hasmters vendus : {{ hamsterSold }}
+    </p>
+    <p>
+      Hamsters passés par l'élevage :
+      {{ hamsterSold + maleHamsterDeadAll + femaleHamsterDeadAll }}
+    </p>
+  </div>
   <button class="next-month-button" (click)="resetAll()">Rejouer</button>
 </div>
 } @else {
@@ -71,6 +76,13 @@
   </p>
 </div>
 
+@if (showGameEvent) {
+<app-card-selector
+  (eventApplied)="onGameEventApplied($event)"
+  (continueToGame)="continueToActions()"
+>
+</app-card-selector>
+} @else {
 <h2>Actions</h2>
 <div class="tips-button-container">
   @if(!displayTips) {<button class="help-button" (click)="handleTips()">
@@ -231,10 +243,9 @@
     Nourriture pour le prochain mois : {{ getFoodForNextMonth() }} kg
   </p>
 </div>
-}} @if (getMoneyForNextMonth()!<0 ) {
+} @if (getMoneyForNextMonth() < 0) {
 <p class="red" id="no-neg">
   Vous ne pouvez pas être en négatif ! <br />Vendez des hamsters ou retirez des
   achats
 </p>
-
-}
+} } }
