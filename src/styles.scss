@@ -5,11 +5,19 @@ $green: rgb(36, 231, 36);
 $red: #e92424;
 $yellow: rgb(244, 244, 28);
 
+@font-face {
+  font-family: "Medodica";
+  src: url("../public/assets/medodica/MedodicaRegular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 * {
   margin: 0;
   padding: 0;
   list-style: none;
-  font-family: "Handjet";
+  font-family: "Medodica", serif;
 }
 
 a:hover,

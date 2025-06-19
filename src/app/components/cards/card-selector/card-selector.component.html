@@ -1,0 +1,22 @@
+<div class="selector-container">
+  <h2>Choisissez une carte</h2>
+
+  <div class="card-selector">
+    @for (bonus of getDisplayedBonuses(); track $index) {
+    <app-one-card
+      [cardIndex]="$index"
+      [isFlipped]="selectedCardIndex === $index"
+      [selectedCardIndex]="selectedCardIndex"
+      [bonus]="bonus"
+      (cardSelected)="onSelected($event)"
+    >
+    </app-one-card>
+    }
+  </div>
+
+  @if (selectedCardIndex !== null) {
+  <div class="continue-section">
+    <button (click)="continueToActions()">Continuer</button>
+  </div>
+  }
+</div>

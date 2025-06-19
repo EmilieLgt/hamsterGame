@@ -1,0 +1,25 @@
+<div
+  class="card-container"
+  [class.flipped]="isFlipped()"
+  [class.dimmed]="getCardState().isDimmed"
+>
+  <div class="card">
+    <!-- arrière -->
+    <div class="card-face card-back">
+      <button
+        class="mystery-card"
+        (click)="onCardClick()"
+        [disabled]="getCardState().isDisabled"
+      >
+        <div class="back-card">?</div>
+      </button>
+    </div>
+    <!-- avant -->
+    <div class="card-face card-front">
+      <div class="bonus-content">
+        <h3>{{ bonus().title }} !</h3>
+        <p>{{ bonus().text }}</p>
+      </div>
+    </div>
+  </div>
+</div>
