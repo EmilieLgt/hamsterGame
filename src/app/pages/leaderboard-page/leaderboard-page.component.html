@@ -1,0 +1,31 @@
+<h2>
+  <img src="/laurier.png" alt="laurier" />Leaderboard
+  <img src="/laurier.png" alt="laurier" />
+</h2>
+<div class="leaderboard">
+  <div class="header-row">
+    <div class="header-item">Pseudo</div>
+    <div class="header-item">Mois</div>
+    <div class="header-item">Hamsters</div>
+    <div class="header-item">Date</div>
+  </div>
+
+  @for (s of scores(); track $index) {
+  <div class="player-row">
+    <div class="stat">
+      @if($index === 0) {
+      <img src="/medailleor.png" alt="or" />
+      } @if($index === 1) {
+      <img src="/medailleargent.png" alt="argent" />
+      } @if($index === 2) {
+      <img src="/medaillebronze.png" alt="bronze" />
+      }
+      {{ $index + 1 }}.
+      {{ s.user_name }}
+    </div>
+    <div class="stat">{{ s.months }}</div>
+    <div class="stat">{{ s.hamsters }}</div>
+    <div class="stat">{{ s.created_at | date : "dd/MM/yyyy HH:mm" }}</div>
+  </div>
+  }
+</div>

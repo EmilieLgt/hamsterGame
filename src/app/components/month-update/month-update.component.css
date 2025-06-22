@@ -1,0 +1,251 @@
+@font-face {
+  font-family: "Medodica";
+  src: url("../public/assets/medodica/MedodicaRegular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: "Medodica", serif;
+}
+
+a:hover,
+button:hover {
+  cursor: pointer;
+}
+
+h2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 1em;
+  font-size: 2em;
+}
+
+.button-play-again, .next-month-button {
+  display: block;
+  margin: auto;
+  padding: 0.5em;
+  background-color: rgb(36, 231, 36);
+  border-radius: 10px;
+  font-size: 1.1em;
+}
+
+.yellow {
+  color: rgb(244, 244, 28);
+}
+
+.red {
+  color: #e92424;
+}
+
+.green {
+  color: rgb(36, 231, 36);
+}
+
+.separator {
+  width: 80%;
+  height: 1px;
+  margin: 15px auto;
+  background-color: white;
+}
+
+body {
+  background-color: rgb(12, 12, 12);
+  color: white;
+}
+
+@media screen and (min-width: 992px) {
+  body {
+    width: 30%;
+    margin: auto;
+  }
+}
+* {
+  font-size: 1.1em;
+}
+
+.hamster-month-container {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  justify-content: space-between;
+  margin: 2em;
+}
+
+.stocks {
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 1em;
+}
+
+#one-line-stock {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 1.2em;
+}
+
+.month-price {
+  margin-left: 2em;
+}
+
+.month-death {
+  margin-top: 1em;
+  display: flex;
+  justify-content: space-evenly;
+}
+.month-death p {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.month-price {
+  margin-top: 1em;
+}
+
+.one-action-container {
+  margin-left: 2em;
+  margin-top: 1em;
+}
+.one-action-container button {
+  background-color: rgb(12, 12, 12);
+  border: none;
+  color: white;
+  margin: 0 1em;
+}
+.one-action-container input {
+  background-color: rgb(12, 12, 12);
+  border-bottom: 3px white solid;
+  border-top: none;
+  border-right: none;
+  border-top: none;
+  width: 20%;
+  color: white;
+}
+
+.how-many-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1em;
+}
+
+#oui {
+  color: rgb(36, 231, 36);
+}
+
+.next-month-button {
+  margin-bottom: 2em;
+  margin-top: 1em;
+}
+
+#money-next-month {
+  margin-bottom: 2em;
+}
+
+.end-of-month-container {
+  text-align: center;
+  margin: 1em;
+}
+
+.icon-food {
+  width: 30px;
+}
+
+.icon-money {
+  width: 30px;
+}
+
+.skull-icon {
+  width: 20px;
+  margin-right: 0.5em;
+}
+
+.game-over {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2em;
+}
+.game-over h3 {
+  color: #e92424;
+  font-size: 2em;
+}
+.game-over .lol {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+.game-over button {
+  margin-top: 1em;
+}
+
+#no-neg {
+  text-align: center;
+  margin-bottom: 2em;
+}
+
+.tips-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  margin-right: 2em;
+}
+
+.help-button {
+  border-radius: 100%;
+  background-color: rgb(12, 12, 12);
+  color: white;
+  border: 2px solid white;
+  height: 30px;
+  width: 30px;
+}
+
+.help-container {
+  border-radius: 25px;
+  border: 3px solid white;
+  padding: 1em;
+  margin-right: 2em;
+  margin-left: 2em;
+}
+.help-container .one-line-tip {
+  margin: 2em 0;
+}
+
+.records-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: start;
+  border: 2px solid rgb(244, 244, 28);
+  padding: 0.5em;
+  width: 50%;
+  margin: 2em auto 0 auto;
+  border-radius: 10px;
+}
+.records-container p {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+}
+.records-container img {
+  height: 25px;
+}
+
+.bilan-game-over {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: rgb(244, 244, 28);
+  margin-top: 1em;
+}/*# sourceMappingURL=month-update.component.css.map */

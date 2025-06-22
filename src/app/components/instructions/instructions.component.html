@@ -1,4 +1,4 @@
-@if(!displayAction) {
+@if(!displayLogin()) {
 <p class="first-p">
   L’objectif du jeu du hamster est de conserver le plus d’hamsters, le plus
   longtemps possible.
@@ -14,7 +14,10 @@
   <img src="/skull-svgrepo-com.svg" />.
 </p>
 
-<!-- <p>Battez votre record de 0 mois !</p> -->
-<button (click)="startGame()">Jouer</button>} @if(displayAction)
-{<app-month-update></app-month-update>} @if(!displayAction) {
-<button (click)="goToKidPage()">Kids</button>}
+<button (click)="startGame()">Jouer</button>}
+ @if(displayLogin()) {
+<app-login (closeLogin)="closeLoginDisquette()"></app-login>
+}
+
+<!-- @if(!displayLogin) {
+<button (click)="goToKidPage()">Kids</button>} -->

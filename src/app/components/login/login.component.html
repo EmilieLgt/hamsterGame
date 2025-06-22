@@ -1,0 +1,147 @@
+<div class="disquette-containner">
+  <div class="top-disquette">
+    <div></div>
+    <div class="grey-square">
+      <div class="title-section">
+        <div class="title-text">{{ getTitleText() }}</div>
+      </div>
+      <div class="black-square"></div>
+    </div>
+    <button (click)="closeDisquette()">×</button>
+  </div>
+
+  <div class="white-space">
+    <!-- Affichage des erreurs -->
+    @if(localError() || authError()) {
+    <div
+      class="error-message"
+      style="color: red; margin-bottom: 10px; padding: 8px; border-radius: 4px"
+    >
+      {{ localError() || authError() }}
+    </div>
+    } @if(currentView() === 'question') {
+    <div class="question">
+      <div>Afin de conserver vos scores, <br />enregistrez-vous !</div>
+      <button
+        style="margin-top: 10px"
+        (click)="showLogin()"
+        [disabled]="authLoading()"
+      >
+        Connexion
+      </button>
+      <div style="margin-top: 20px">Pas encore de compte ?</div>
+      <button
+        style="margin-top: 10px"
+        (click)="showRegister()"
+        [disabled]="authLoading()"
+      >
+        S'inscrire
+      </button>
+    </div>
+    }
+
+    <!-- Vue Inscription -->
+    @if(currentView() === 'register') {
+    <div class="register-form">
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+        <label>Pseudo</label>
+        <input
+          type="pseudo"
+          formControlName="pseudo"
+          [class.error]="
+            registerForm.get('pseudo')?.invalid &&
+            registerForm.get('pseudo')?.touched
+          "
+        />
+        @if(getFieldError('register', 'pseudo')) {
+        <div class="field-error">{{ getFieldError("register", "pseudo") }}</div>
+        }
+
+        <label>Mot de passe - 6 caractères min.</label>
+        <div class="mdp">
+          Ne mettez pas votre mot de passe de banque, c'est pas hashé (ou si
+          faites ça ... pour financer les serveurs...).
+        </div>
+        <input
+          type="password"
+          formControlName="password"
+          [class.error]="
+            registerForm.get('password')?.invalid &&
+            registerForm.get('password')?.touched
+          "
+        />
+        @if(getFieldError('register', 'password')) {
+        <div class="field-error">
+          {{ getFieldError("register", "password") }}
+        </div>
+        }
+
+        <button
+          type="submit"
+          class="inscrire"
+          [disabled]="registerForm.invalid || isSubmitting() || authLoading()"
+        >
+          {{ isSubmitting() ? "Inscription..." : "S'inscrire" }}
+        </button>
+
+        <button
+          type="button"
+          class="back-button inscrire"
+          (click)="showQuestion()"
+          [disabled]="isSubmitting() || authLoading()"
+        >
+          Retour
+        </button>
+      </form>
+    </div>
+    }
+
+    <!-- Vue Connexion -->
+    @if(currentView() === 'login') {
+    <div class="login-form">
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        <label>Pseudo</label>
+        <input
+          type="pseudo"
+          formControlName="pseudo"
+          [class.error]="
+            loginForm.get('pseudo')?.invalid && loginForm.get('pseudo')?.touched
+          "
+        />
+        @if(getFieldError('login', 'pseudo')) {
+        <div class="field-error">{{ getFieldError("login", "pseudo") }}</div>
+        }
+
+        <label>Mot de passe</label>
+        <input
+          type="password"
+          formControlName="password"
+          [class.error]="
+            loginForm.get('password')?.invalid &&
+            loginForm.get('password')?.touched
+          "
+        />
+        @if(getFieldError('login', 'password')) {
+        <div class="field-error">{{ getFieldError("login", "password") }}</div>
+        }
+
+        <button
+          type="submit"
+          [disabled]="loginForm.invalid || isSubmitting() || authLoading()"
+        >
+          {{ isSubmitting() ? "Connexion..." : "Se connecter" }}
+        </button>
+
+        <button
+          type="button"
+          class="back-button"
+          (click)="showQuestion()"
+          [disabled]="isSubmitting() || authLoading()"
+        >
+          Retour
+        </button>
+      </form>
+    </div>
+    }
+  </div>
+</div>
