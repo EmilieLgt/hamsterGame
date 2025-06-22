@@ -39,6 +39,5 @@ testem.log
 
 # System files
 /src/environments/environment.development.ts
-/src/environments/environment.ts
 .DS_Store
 Thumbs.db
