@@ -1,0 +1,174 @@
+@font-face {
+  font-family: "Medodica";
+  src: url("../public/assets/medodica/MedodicaRegular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: "Medodica", serif;
+}
+
+a:hover,
+button:hover {
+  cursor: pointer;
+}
+
+h2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 1em;
+  font-size: 2em;
+}
+
+.button-play-again {
+  display: block;
+  margin: auto;
+  padding: 0.5em;
+  background-color: rgb(36, 231, 36);
+  border-radius: 10px;
+  font-size: 1.1em;
+}
+
+.yellow {
+  color: rgb(244, 244, 28);
+}
+
+.red {
+  color: #e92424;
+}
+
+.green {
+  color: rgb(36, 231, 36);
+}
+
+.separator {
+  width: 80%;
+  height: 1px;
+  margin: 15px auto;
+  background-color: white;
+}
+
+body {
+  background-color: rgb(12, 12, 12);
+  color: white;
+}
+
+@media screen and (min-width: 992px) {
+  body {
+    width: 30%;
+    margin: auto;
+  }
+}
+.card-container {
+  perspective: 1000px;
+  width: 120px;
+  height: 200px;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+.card-container.dimmed {
+  opacity: 0.4;
+  filter: grayscale(80%);
+}
+.card-container.dimmed .card-face {
+  border-color: #666 !important;
+}
+.card-container.dimmed .back-card {
+  color: #666 !important;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.card-container.flipped .card {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 120px;
+  height: 200px;
+  backface-visibility: hidden;
+  border-radius: 25px;
+  border: white 2px solid;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.card-back {
+  background-color: rgb(12, 12, 12);
+}
+.card-back .mystery-card {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  border-radius: 23px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.card-back .mystery-card:hover {
+  transform: scale(1.05);
+}
+.card-back .mystery-card .back-card {
+  display: flex;
+  color: white;
+  font-size: 8em;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  transition: color 0.3s ease;
+}
+
+.card-front {
+  background: rgb(12, 12, 12);
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1em;
+}
+.card-front .bonus-content {
+  text-align: center;
+  color: white;
+  width: 100%;
+}
+.card-front .bonus-content h3 {
+  margin: 0 0 0.5em 0;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+.card-front .bonus-content p {
+  margin: 0;
+  font-size: 0.8em;
+  line-height: 1.2;
+  word-wrap: break-word;
+}
+
+.card-container.flipped .card-front {
+  animation: celebration 0.8s ease-in-out;
+}
+
+@keyframes celebration {
+  0% {
+    transform: rotateY(180deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: rotateY(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateY(180deg);
+    opacity: 1;
+  }
+}/*# sourceMappingURL=one-card.component.css.map */

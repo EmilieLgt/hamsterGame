@@ -1,22 +1,32 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { MonthUpdateComponent } from '../month-update/month-update.component';
+import { CommonModule } from '@angular/common';
+import { LoginComponent } from '../login/login.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-instructions',
   standalone: true,
-  imports: [MonthUpdateComponent],
+  imports: [CommonModule, LoginComponent],
   templateUrl: './instructions.component.html',
   styleUrl: './instructions.component.scss',
 })
 export class InstructionsComponent {
-  router: Router = inject(Router);
-  displayAction: boolean = false;
+  private router = inject(Router);
+  readonly authService = inject(AuthService);
 
-  goToKidPage() {
-    this.router.navigate(['/kid']);
-  }
+  //  contrôler l'affichage de la disquette
+  displayLogin = signal(false);
+
   startGame() {
-    this.displayAction = true;
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/game']);
+    } else {
+      this.displayLogin.set(true);
+    }
+  }
+
+  closeLoginDisquette() {
+    this.displayLogin.set(false);
   }
 }

@@ -1,7 +1,22 @@
+<div class="header">
+  <div class="user-info">
+    @if(isAuthenticated()) {
+    <div class="connected-user">
+      <span>👋 Salut {{ user()?.name }} !</span>
+      <button (click)="signOut()" class="logout-btn">Se déconnecter</button>
+    </div>
+    } @else {
+    <button (click)="openLogin()" class="login-btn">
+      <img src="/profile.svg" /> Se connecter
+    </button>
+    }
+  </div>
+  <button routerLink="/leaderboard"><img src="/coupe.png" />Leaderboard</button>
+</div>
+
 <div class="title">
   <img src="/hamster-running.gif" alt="hamster" />
   <h1>Le jeu du hamster</h1>
 </div>
 
 <app-instructions></app-instructions>
-<a></a>

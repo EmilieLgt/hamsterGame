@@ -1,4 +1,4 @@
-@import "../../../../styles.scss";
+@use "../../../../styles.scss" as v;
 
 .card-container {
   perspective: 1000px;
@@ -6,17 +6,16 @@
   height: 200px;
   transition: opacity 0.3s ease, filter 0.3s ease;
 
-  // Effet gris pour les cartes non sélectionnées
   &.dimmed {
     opacity: 0.4;
     filter: grayscale(80%);
 
     .card-face {
-      border-color: #666 !important; 
+      border-color: #666 !important;
     }
 
     .back-card {
-      color: #666 !important; 
+      color: #666 !important;
     }
   }
 }
@@ -35,8 +34,8 @@
 
 .card-face {
   position: absolute;
-  width: 120px; 
-  height: 200px; 
+  width: 120px;
+  height: 200px;
   backface-visibility: hidden;
   border-radius: 25px;
   border: white 2px solid;
@@ -45,7 +44,7 @@
 }
 
 .card-back {
-  background-color: $black;
+  background-color: v.$black;
 
   .mystery-card {
     width: 100%;
@@ -62,7 +61,7 @@
 
     .back-card {
       display: flex;
-      color: $white;
+      color: v.$white;
       font-size: 8em;
       align-items: center;
       justify-content: center;
@@ -73,21 +72,21 @@
 }
 
 .card-front {
-  background: $black;
+  background: v.$black;
   transform: rotateY(180deg);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1em; 
+  padding: 1em;
 
   .bonus-content {
     text-align: center;
     color: white;
-    width: 100%; 
+    width: 100%;
 
     h3 {
       margin: 0 0 0.5em 0;
-      font-size: 1.2em; 
+      font-size: 1.2em;
       font-weight: bold;
     }
 

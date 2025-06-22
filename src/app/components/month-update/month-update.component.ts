@@ -1,7 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CardSelectorComponent } from '../cards/card-selector/card-selector.component';
 import { IGameEvent } from '../../models/bonus.model';
+import { IScore } from '../../models/score.model';
+import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
+import { CardSelectorComponent } from '../cards/card-selector/card-selector.component';
+import { v4 as uuidv4 } from 'uuid';
+
 @Component({
   selector: 'app-month-update',
   standalone: true,
@@ -10,6 +15,8 @@ import { IGameEvent } from '../../models/bonus.model';
   styleUrl: './month-update.component.scss',
 })
 export class MonthUpdateComponent implements OnInit {
+  readonly apiService = inject(ApiService);
+  readonly authService = inject(AuthService);
   hamsterPrice: number = Math.floor(Math.random() * 10) + 5;
   cagePrice: number = Math.floor(Math.random() * 10) + 1;
   foodPrice: number = Math.floor(Math.random() * 10) + 1;
@@ -406,10 +413,9 @@ export class MonthUpdateComponent implements OnInit {
   }
   // check si mois à évènement
   onNextMonth(): void {
-    // Vérifier si c'est un mois d'événement au début du mois
     if (this.isEventMonth() && !this.currentMonthEffect) {
       this.showGameEvent = true;
-      return; // Stopper ici, attendre la sélection de l'événement
+      return;
     }
 
     window.scrollTo(0, 0);
@@ -524,9 +530,21 @@ export class MonthUpdateComponent implements OnInit {
     localStorage.setItem('totalDeaths', JSON.stringify(this.totalHamstersDead));
   }
 
-  resetAll(): void {
+  async resetAll(): Promise<void> {
     this.saveToLocalStorage();
-    // Prix des items (random entre 1 et 10)
+    const playerName = this.authService.getUserName();
+
+    const scoreData: IScore = {
+      user_name: playerName || 'Anonyme',
+      months: this.monthNumber,
+      hamsters: this.hamsterSold + this.allHamstersDead,
+    };
+    try {
+      await this.apiService.addScore(scoreData);
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde du score:', error);
+    }
+
     this.hamsterPrice = Math.floor(Math.random() * 10) + 5;
     this.cagePrice = Math.floor(Math.random() * 10) + 1;
     this.foodPrice = Math.floor(Math.random() * 10) + 1;

@@ -1,1 +1,46 @@
-<router-outlet> </router-outlet>
+<div class="app-container">
+  <!-- Header global -->
+  <div class="header">
+    <!-- Bouton retour conditionnel -->
+    @if(showBackButton()) {
+    <button (click)="goBack()" class="back-btn">
+      <img src="/arrowback.avif" />Retour
+    </button>
+    }
+
+    <!-- Info utilisateur -->
+    <div class="user-info">
+      @if(authService.isAuthenticated()) {
+      <div class="connected-user">
+        <span>Hello {{ authService.user()?.name }} !</span>
+        <button (click)="signOut()" class="logout-btn">Se déconnecter</button>
+      </div>
+      } @else {
+      <button (click)="openLogin()" class="login-btn">
+        <img src="/profile.svg" /> Se connecter
+      </button>
+      }
+    </div>
+    @if(router.url !== '/leaderboard' && router.url !== '/game') {
+    <button routerLink="/leaderboard" class="leaderboard-btn">
+      <img src="/coupe.png" />Leaderboard
+    </button>
+    }
+  </div>
+
+  <!-- Titre global -->
+  <div class="title">
+    <img src="/hamster-running.gif" alt="hamster" />
+    <h1>Le jeu du hamster</h1>
+  </div>
+
+  <!-- Contenu des pages -->
+  <router-outlet></router-outlet>
+
+  <!-- Modale de connexion -->
+  @if(showLoginModal()) {
+  <div class="disquette">
+    <app-login (closeLogin)="closeLogin()"></app-login>
+  </div>
+  }
+</div>

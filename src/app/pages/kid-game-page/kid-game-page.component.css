@@ -1,0 +1,59 @@
+.whole-kid-page {
+  background-color: rgb(225, 240, 252);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+h1 {
+  font-family: "Sniglet";
+  font-size: 3em;
+  color: rgb(61, 136, 146);
+  text-align: center;
+  padding-top: 0.5em;
+  text-shadow: 1px 1px 5px #dff703, 1px 2px 1px #990fcb, 1px 3px 1px #990fcb, 1px 5px 1px #deb3ee;
+}
+
+.hamster2base {
+  width: 200px;
+}
+
+.game-box {
+  width: 80%;
+  background-color: rgb(187, 223, 228);
+  margin: 1em auto;
+  border-radius: 25px;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.play-button {
+  background-color: rgb(61, 136, 146);
+  color: white;
+  width: 90px;
+  height: 90px;
+}
+.play-button img {
+  width: 40px;
+}
+
+button {
+  border: none;
+  box-shadow: 1px 1px 5px #dff703, 1px 2px 1px #990fcb, 1px 3px 1px #990fcb, 1px 4px 1px #280fcb, 1px 5px 1px #990fcb, 1px 6px 1px #d29ee6, 1px 7px 1px #d29ee6, 1px 8px 1px #d29ee6, 1px 9px 1px #fac87e, 1px 10px 1px #fac87e;
+  margin: 10px;
+  border-radius: 15px;
+}
+button img {
+  width: 100px;
+}/*# sourceMappingURL=kid-game-page.component.css.map */

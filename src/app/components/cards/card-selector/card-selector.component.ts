@@ -12,7 +12,6 @@ import { IBonus, IGameEvent } from '../../../models/bonus.model';
 export class CardSelectorComponent implements OnInit {
   selectedCardIndex: number | null = null;
 
-  // Output pour les événements de jeu
   eventApplied = output<IGameEvent>();
   continueToGame = output<void>();
 
@@ -77,7 +76,7 @@ export class CardSelectorComponent implements OnInit {
 
   onSelected(cardIndex: number) {
     this.selectedCardIndex = cardIndex;
-    // Émettre l'événement sélectionné vers le parent
+    // émettre l'événement sélectionné vers le parent
     const selectedEvent = this.selectedEvents[cardIndex];
     this.eventApplied.emit(selectedEvent);
   }
@@ -90,7 +89,7 @@ export class CardSelectorComponent implements OnInit {
   continueToActions() {
     this.continueToGame.emit();
   }
-  // Convertir les événements en IBonus pour les cartes
+  // convertir les événements en IBonus pour les cartes
   getDisplayedBonuses(): IBonus[] {
     return this.selectedEvents.map((event) => ({
       title: event.title,
