@@ -113,7 +113,6 @@ export class AuthService {
     this.updateAuthState({ loading: true, error: null });
 
     try {
-      // Chercher l'utilisateur par pseudo et mot de passe
       const { data: user, error } = await this.apiService.supabase
         .from('USER')
         .select('id, name')

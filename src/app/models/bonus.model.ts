@@ -10,12 +10,12 @@ export interface IGameEvent {
   text: string;
   effect: {
     type:
-      | 'money'
-      | 'food'
-      | 'hamster_death'
-      | 'hamster_birth'
+      | 'money_percentage'
+      | 'food_percentage'
+      | 'hamster_death_percentage'
+      | 'hamster_birth_boost'
       | 'price_modifier';
     value: number;
-    target?: 'male' | 'female' | 'all' | 'hamster' | 'cage' | 'food';
+    target?: string;
   };
 }

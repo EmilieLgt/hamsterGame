@@ -16,58 +16,83 @@ export class CardSelectorComponent implements OnInit {
   continueToGame = output<void>();
 
   gameEvents: IGameEvent[] = [
+    // argent
     {
       title: 'Bonus',
-      text: 'Hausse de salaire +30fr, merci patron !',
-      effect: { type: 'money', value: 30 },
+      text: 'Hausse de salaire. Votre revenu augmente de 30% immédiatement, merci patron !',
+      effect: { type: 'money_percentage', value: 30 },
     },
     {
       title: 'Bonus',
-      text: 'Don de nourriture de la ligue de protection des hamsters, +10kg !',
-      effect: { type: 'food', value: 10 },
-    },
-    {
-      title: 'Bonus',
-      text: 'Saison des amours ! Reproduction assurée !',
-      effect: { type: 'hamster_birth', value: 2 },
+      text: 'Prime exceptionnelle ! Votre revenu augmente immédiatement de 40%, merci patron !',
+      effect: { type: 'money_percentage', value: 40 },
     },
     {
       title: 'Malus',
-      text: 'Épidémie de COVID-32 : 2 hamsters morts',
-      effect: { type: 'hamster_death', value: 2, target: 'all' },
+      text: 'Taxe sur les propriétaires de cages ! Prélèvement de -30% de votre fortune',
+      effect: { type: 'money_percentage', value: -30 },
     },
     {
       title: 'Malus',
-      text: 'Inflation ! Tous les prix augmentent de 50% !',
-      effect: { type: 'price_modifier', value: 1.5, target: 'all' },
+      text: "Visite de la CAF. Vous n'avez pas déclaré tous vos hamsters colocataires pour vos APL, 50% de votre argent est saisi",
+      effect: { type: 'money_percentage', value: -50 },
     },
+    // bouffe
     {
-      title: 'Malus',
-      text: 'Pénurie alimentaire, plus de croquette au Liddl, -5kg',
-      effect: { type: 'food', value: -5 },
+      title: 'Bonus',
+      text: 'Don de nourriture de la ligue de protection des hamsters. +50% de nourriture !',
+      effect: { type: 'food_percentage', value: 50 },
     },
     {
       title: 'Bonus',
-      text: 'Promo chez Jardiland, hamsters à -50%',
+      text: 'Carrottes abandonnées ! Vos stocks alimentaires augmentent de +30%',
+      effect: { type: 'food_percentage', value: 30 },
+    },
+    {
+      title: 'Malus',
+      text: 'Des goinfres sont parmi les hamsters ! Ils mangent 25% de vos réserves',
+      effect: { type: 'food_percentage', value: -25 },
+    },
+    {
+      title: 'Malus',
+      text: 'Inondations. Le stock de croquettes en prend un coup. 50% de votre stock est fichu. ',
+      effect: { type: 'food_percentage', value: -50 },
+    },
+    // hamsters
+    {
+      title: 'Malus',
+      text: 'Épidémie de COVID-32 : 25% de hamsters morts',
+      effect: { type: 'hamster_death_percentage', value: 25 },
+    },
+    {
+      title: 'Malus',
+      text: "Cages mal fermées. Tous les hamsters tentent de s'échapper. Vous arrivez à temps pour en sauver la moitié.",
+      effect: { type: 'hamster_death_percentage', value: 50 },
+    },
+
+    {
+      title: 'Bonus',
+      text: 'Promo chez Jardiland. Hamsters à -50%',
       effect: { type: 'price_modifier', value: 0.5, target: 'hamster' },
     },
-    {
-      title: 'Malus',
-      text: 'Taxe sur les propriétaires de cages ! -15€',
-      effect: { type: 'money', value: -15 },
-    },
+    // reproduction
     {
       title: 'Bonus',
-      text: 'Cage gratuite, offerte pour toute visite chez Carrefour',
-      effect: { type: 'money', value: 20 },
+      text: 'Saison des amours ! +50% de chance de reproduction pour les prochains mois',
+      effect: { type: 'hamster_birth_boost', value: 50 },
     },
     {
       title: 'Malus',
-      text: 'Burn out chez les femelles, moins de reproduction',
-      effect: { type: 'hamster_birth', value: -1 },
+      text: 'Burn out chez les femelles ! -60% de chance de reproduction pour les prochains mois',
+      effect: { type: 'hamster_birth_boost', value: -60 },
+    },
+    // morts
+    {
+      title: 'Malus',
+      text: "Cages mal fermées. Tous les hamsters tentent de s'échapper. Vous arrivez à temps pour en sauver la moitié.",
+      effect: { type: 'hamster_death_percentage', value: 50 },
     },
   ];
-
   selectedEvents: IGameEvent[] = [];
 
   ngOnInit() {

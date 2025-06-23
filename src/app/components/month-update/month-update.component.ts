@@ -6,25 +6,35 @@ import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { CardSelectorComponent } from '../cards/card-selector/card-selector.component';
 import { v4 as uuidv4 } from 'uuid';
+import { RouterLink } from '@angular/router';
+import { Router } from 'express';
 
 @Component({
   selector: 'app-month-update',
   standalone: true,
-  imports: [FormsModule, CardSelectorComponent],
+  imports: [FormsModule, CardSelectorComponent, RouterLink],
   templateUrl: './month-update.component.html',
   styleUrl: './month-update.component.scss',
 })
 export class MonthUpdateComponent implements OnInit {
   readonly apiService = inject(ApiService);
   readonly authService = inject(AuthService);
+
+  // Prix initiaux - valeurs correctes dès le début
   hamsterPrice: number = Math.floor(Math.random() * 10) + 5;
   cagePrice: number = Math.floor(Math.random() * 10) + 1;
   foodPrice: number = Math.floor(Math.random() * 10) + 1;
 
-  // les stocks (nourriture, argent, cage)
-  foodStock: number = 5;
-  money: number = 50;
+  // les stocks (nourriture, argent, cage) - valeurs cohérentes
+  foodStock: number = 8; // Changé de 5 à 8 pour être cohérent avec resetAll()
+  money: number = 60; // Changé de 50 à 60 pour être cohérent avec resetAll()
   cage: number = 1;
+
+  // Nouvelle propriété pour gérer la fertilité persistante
+  private currentFertilityBonus: number = 0;
+
+  // gérer l'état de sauvegarde
+  scoreSaved: boolean = false;
 
   // fin du jeu
   endOfGame: boolean = false;
@@ -81,6 +91,39 @@ export class MonthUpdateComponent implements OnInit {
   showGameEvent: boolean = false;
   eventProcessed: boolean = false;
   currentMonthEffect: IGameEvent | null = null;
+
+  //  fin de jeu
+  private async endGame(): Promise<void> {
+    this.endOfGame = true;
+    this.femaleAdultHasmters = 0;
+    this.femaleSmallHamsters = 0;
+    this.maleAdultHasmters = 0;
+    this.maleSmallHamsters = 0;
+
+    // Sauvegarder automatiquement le score
+    if (!this.scoreSaved) {
+      await this.saveScore();
+      this.scoreSaved = true;
+    }
+  }
+
+  //  sauvegarder le score séparément
+  private async saveScore(): Promise<void> {
+    try {
+      this.saveToLocalStorage();
+      const playerName = this.authService.getUserName();
+
+      const scoreData: IScore = {
+        user_name: playerName || 'Anonyme',
+        months: this.monthNumber,
+        hamsters: this.hamsterSold + this.allHamstersDead,
+      };
+
+      await this.apiService.addScore(scoreData);
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde du score:', error);
+    }
+  }
 
   handleTips() {
     this.displayTips = !this.displayTips;
@@ -180,7 +223,11 @@ export class MonthUpdateComponent implements OnInit {
     );
 
     for (let i = 0; i < potentialMothers; i++) {
-      if (Math.random() < 0.5) {
+      const baseChance = 0.5; // 50% de base
+      const modifier = this.currentFertilityBonus / 100;
+      const newChance = Math.max(0.1, Math.min(0.9, baseChance + modifier));
+
+      if (Math.random() < newChance) {
         const litterSize = Math.floor(Math.random() * 2) + 1;
 
         for (let j = 0; j < litterSize; j++) {
@@ -192,17 +239,25 @@ export class MonthUpdateComponent implements OnInit {
         }
       }
     }
+
+    this.currentFertilityBonus *= 0.5;
+    if (Math.abs(this.currentFertilityBonus) < 1) {
+      this.currentFertilityBonus = 0;
+    }
   }
 
   // Mise à jour du nombre d'hamsters par cage
   updateHamstersByCage(): void {
     this.cage += this.cagesBought;
+    // pas de div par 0
     this.hamstersByCage =
-      (this.femaleAdultHasmters +
-        this.femaleSmallHamsters +
-        this.maleAdultHasmters +
-        this.maleSmallHamsters) /
-      this.cage;
+      this.cage > 0
+        ? (this.femaleAdultHasmters +
+            this.femaleSmallHamsters +
+            this.maleAdultHasmters +
+            this.maleSmallHamsters) /
+          this.cage
+        : 0;
   }
 
   // Utilitaires
@@ -268,7 +323,6 @@ export class MonthUpdateComponent implements OnInit {
     this.maleSold = this.calculateEnoughMoney(
       Math.min(value, this.maleAdultHasmters)
     );
-    this.hamsterSold += value;
   }
 
   getPriceMaleSold(): number {
@@ -283,7 +337,6 @@ export class MonthUpdateComponent implements OnInit {
     this.femaleSold = this.calculateEnoughMoney(
       Math.min(value, this.femaleAdultHasmters)
     );
-    this.hamsterSold += value;
   }
 
   getPriceFemaleSold(): number {
@@ -325,7 +378,6 @@ export class MonthUpdateComponent implements OnInit {
     this.canBuyCage = true;
   }
 
-  // Evenements
   isEventMonth(): boolean {
     return this.monthNumber % 4 === 0 && !this.currentMonthEffect;
   }
@@ -335,33 +387,76 @@ export class MonthUpdateComponent implements OnInit {
     this.applyGameEvent(event);
   }
 
+  // Evenemments de cartes
   private applyGameEvent(event: IGameEvent) {
     switch (event.effect.type) {
-      case 'money':
-        this.money = Math.max(0, this.money + event.effect.value);
+      case 'money_percentage':
+        this.applyMoneyPercentage(event.effect.value);
         break;
 
-      case 'food':
-        this.foodStock = Math.max(0, this.foodStock + event.effect.value);
+      case 'food_percentage':
+        this.applyFoodPercentage(event.effect.value);
         break;
 
-      case 'hamster_death':
-        this.applyHamsterDeath(event.effect.value);
+      case 'hamster_death_percentage':
+        this.applyHamsterDeathPercentage(event.effect.value);
         break;
 
-      case 'hamster_birth':
-        this.applyHamsterBirth(event.effect.value);
+      case 'hamster_birth_boost':
+        this.applyHamsterBirthBoost(event.effect.value);
         break;
 
       case 'price_modifier':
-        this.applyPriceModifier(event.effect.value, event.effect.target);
+        this.applyPriceModifierPercentage(
+          event.effect.value,
+          event.effect.target
+        );
         break;
     }
   }
 
-  private applyHamsterDeath(deaths: number) {
-    for (let i = 0; i < deaths; i++) {
-      if (this.maleAdultHasmters > 0 && Math.random() < 0.5) {
+  // Application des bonus/malus d'argent avec calcul équitable
+  private applyMoneyPercentage(percentage: number) {
+    if (percentage > 0) {
+      // Pour les bonus : arrondir vers le haut pour être généreux
+      const bonus = Math.ceil(this.money * (percentage / 100));
+      this.money = this.money + bonus;
+    } else {
+      // Pour les malus : arrondir vers le bas pour être moins punitif
+      const malus = Math.floor(this.money * (Math.abs(percentage) / 100));
+      this.money = Math.max(0, this.money - malus);
+    }
+  }
+
+  // Application des bonus/malus de nourriture avec calcul équitable
+  private applyFoodPercentage(percentage: number) {
+    if (percentage > 0) {
+      // Pour les bonus : arrondir vers le haut
+      const bonus = Math.ceil(this.foodStock * (percentage / 100));
+      this.foodStock = this.foodStock + bonus;
+    } else {
+      // Pour les malus : arrondir vers le bas
+      const malus = Math.floor(this.foodStock * (Math.abs(percentage) / 100));
+      this.foodStock = Math.max(0, this.foodStock - malus);
+    }
+  }
+
+  // Application des pourcentages de morts
+  private applyHamsterDeathPercentage(percentage: number) {
+    const totalAdultHamsters =
+      this.maleAdultHasmters + this.femaleAdultHasmters;
+    const hamstersToKill = Math.floor(totalAdultHamsters * (percentage / 100));
+
+    for (let i = 0; i < hamstersToKill; i++) {
+      if (this.maleAdultHasmters > 0 && this.femaleAdultHasmters > 0) {
+        if (Math.random() < 0.5 && this.maleAdultHasmters > 0) {
+          this.maleAdultHasmters--;
+          this.maleHamsterDeadAll++;
+        } else if (this.femaleAdultHasmters > 0) {
+          this.femaleAdultHasmters--;
+          this.femaleHamsterDeadAll++;
+        }
+      } else if (this.maleAdultHasmters > 0) {
         this.maleAdultHasmters--;
         this.maleHamsterDeadAll++;
       } else if (this.femaleAdultHasmters > 0) {
@@ -371,48 +466,39 @@ export class MonthUpdateComponent implements OnInit {
     }
   }
 
-  private applyHamsterBirth(bonus: number) {
-    const potentialMothers = Math.min(
-      this.femaleAdultHasmters,
-      this.maleAdultHasmters
+  private applyHamsterBirthBoost(percentage: number) {
+    this.currentFertilityBonus += percentage;
+    this.currentFertilityBonus = Math.max(
+      -80,
+      Math.min(80, this.currentFertilityBonus)
     );
-
-    for (let i = 0; i < potentialMothers; i++) {
-      const baseChance = 0.5;
-      const modifiedChance =
-        bonus > 0 ? baseChance + 0.3 : Math.max(0.1, baseChance - 0.3);
-
-      if (Math.random() < modifiedChance) {
-        const litterSize = Math.floor(Math.random() * (bonus > 0 ? 3 : 2)) + 1;
-
-        for (let j = 0; j < litterSize; j++) {
-          if (Math.random() < 0.5) {
-            this.maleSmallHamsters++;
-          } else {
-            this.femaleSmallHamsters++;
-          }
-        }
-      }
-    }
+    this.handleBreeding();
   }
 
-  private applyPriceModifier(modifier: number, target?: string) {
+  // Application des modificateurs de prix
+  private applyPriceModifierPercentage(value: number, target?: string) {
+    const multiplier = value;
+
     if (target === 'hamster' || target === 'all') {
-      this.hamsterPrice = Math.floor(this.hamsterPrice * modifier);
+      this.hamsterPrice = Math.max(
+        1,
+        Math.floor(this.hamsterPrice * multiplier)
+      );
     }
     if (target === 'cage' || target === 'all') {
-      this.cagePrice = Math.floor(this.cagePrice * modifier);
+      this.cagePrice = Math.max(1, Math.floor(this.cagePrice * multiplier));
     }
     if (target === 'food' || target === 'all') {
-      this.foodPrice = Math.floor(this.foodPrice * modifier);
+      this.foodPrice = Math.max(1, Math.floor(this.foodPrice * multiplier));
     }
   }
 
   continueToActions() {
     this.showGameEvent = false;
   }
+
   // check si mois à évènement
-  onNextMonth(): void {
+  async onNextMonth(): Promise<void> {
     if (this.isEventMonth() && !this.currentMonthEffect) {
       this.showGameEvent = true;
       return;
@@ -425,13 +511,10 @@ export class MonthUpdateComponent implements OnInit {
     const previousFemaleDeaths = this.femaleHamsterDeadAll;
 
     // Attribution des nouveaux hamsters achetés
-    for (let i = 0; i < this.hamstersToBuy; i++) {
-      if (Math.random() < 0.5) {
-        this.maleAdultHasmters++;
-      } else {
-        this.femaleAdultHasmters++;
-      }
-    }
+    const newMales = Math.floor(this.hamstersToBuy / 2);
+    const newFemales = this.hamstersToBuy - newMales;
+    this.maleAdultHasmters += newMales;
+    this.femaleAdultHasmters += newFemales;
 
     // Reset des compteurs de morts
     this.deathByHunger = 0;
@@ -463,6 +546,7 @@ export class MonthUpdateComponent implements OnInit {
     this.maleAdultHasmters = this.calculateEnoughMoney(
       this.maleAdultHasmters - this.maleSold
     );
+    this.hamsterSold += this.maleSold + this.femaleSold;
 
     // Mise à jour des stocks
     this.money = this.getMoneyForNextMonth();
@@ -482,19 +566,14 @@ export class MonthUpdateComponent implements OnInit {
 
     // Mise à jour finale
     this.updateHamstersByCage();
-
-    // Vérification de fin de jeu
     if (
       this.femaleAdultHasmters <= 0 &&
       this.femaleSmallHamsters <= 0 &&
       this.maleAdultHasmters <= 0 &&
       this.maleSmallHamsters <= 0
     ) {
-      this.endOfGame = true;
-      this.femaleAdultHasmters = 0;
-      this.femaleSmallHamsters = 0;
-      this.maleAdultHasmters = 0;
-      this.maleSmallHamsters = 0;
+      await this.endGame();
+      return;
     }
 
     // Mise à jour du mois et des prix
@@ -531,28 +610,19 @@ export class MonthUpdateComponent implements OnInit {
   }
 
   async resetAll(): Promise<void> {
-    this.saveToLocalStorage();
-    const playerName = this.authService.getUserName();
 
-    const scoreData: IScore = {
-      user_name: playerName || 'Anonyme',
-      months: this.monthNumber,
-      hamsters: this.hamsterSold + this.allHamstersDead,
-    };
-    try {
-      await this.apiService.addScore(scoreData);
-    } catch (error) {
-      console.error('Erreur lors de la sauvegarde du score:', error);
-    }
-
+    // Prix initiaux 
     this.hamsterPrice = Math.floor(Math.random() * 10) + 5;
     this.cagePrice = Math.floor(Math.random() * 10) + 1;
     this.foodPrice = Math.floor(Math.random() * 10) + 1;
 
-    // Stocks initiaux
-    this.foodStock = 5;
-    this.money = 50;
+    // Stocks initiaux 
+    this.foodStock = 8; 
+    this.money = 60; 
     this.cage = 1;
+
+    // Reset du flag de sauvegarde
+    this.scoreSaved = false;
 
     // Reset du jeu
     this.endOfGame = false;
@@ -569,6 +639,9 @@ export class MonthUpdateComponent implements OnInit {
     this.deathByHunger = 0;
     this.maleHamsterDeadAll = 0;
     this.femaleHamsterDeadAll = 0;
+
+    // Reset de la fertilité persistante
+    this.currentFertilityBonus = 0;
 
     // Reset des achats/ventes
     this.wantsToBuyHamster = false;

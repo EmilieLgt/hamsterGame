@@ -3,11 +3,12 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LoginComponent } from '../login/login.component';
 import { AuthService } from '../../services/auth.service';
+import { DemineurComponent } from '../demineur/demineur.component';
 
 @Component({
   selector: 'app-instructions',
   standalone: true,
-  imports: [CommonModule, LoginComponent],
+  imports: [CommonModule, LoginComponent, DemineurComponent],
   templateUrl: './instructions.component.html',
   styleUrl: './instructions.component.scss',
 })
@@ -15,7 +16,9 @@ export class InstructionsComponent {
   private router = inject(Router);
   readonly authService = inject(AuthService);
 
-  //  contrôler l'affichage de la disquette
+  showDemineur = signal(false);
+
+  //  affichage de la disquette
   displayLogin = signal(false);
 
   startGame() {
@@ -28,5 +31,8 @@ export class InstructionsComponent {
 
   closeLoginDisquette() {
     this.displayLogin.set(false);
+  }
+  openDemineur() {
+    this.showDemineur.set(!this.showDemineur());
   }
 }
