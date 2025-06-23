@@ -32,6 +32,12 @@ export class LoginComponent {
   currentView = signal<'question' | 'login' | 'register'>('question');
   isSubmitting = signal(false);
   localError = signal<string | null>(null);
+  isAccountCreated = signal<boolean>(false);
+  showPassword = signal(false);
+
+  togglePasswordVisibility() {
+    this.showPassword.update((current) => !current);
+  }
 
   getTitleText = computed(() => {
     switch (this.currentView()) {
@@ -77,6 +83,7 @@ export class LoginComponent {
   closeDisquette() {
     this.closeLogin.emit();
     this.clearErrors();
+    this.isAccountCreated.set(false);
   }
 
   private clearErrors() {
@@ -121,12 +128,14 @@ export class LoginComponent {
     this.isSubmitting.set(false);
 
     if (result.success) {
-      this.localError.set('Vérifiez votre pseudo pour confirmer votre compte!');
       setTimeout(() => {
         this.showLogin();
+        this.isAccountCreated.set(true);
       }, 3000);
     } else {
-      this.localError.set(result.error || "Erreur d'inscription");
+      this.localError.set(
+        result.error || "Erreur d'inscription, contacter le commercial."
+      );
     }
   }
 

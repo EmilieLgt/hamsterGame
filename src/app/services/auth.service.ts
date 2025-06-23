@@ -27,10 +27,8 @@ export class AuthService {
   readonly isAuthenticated = computed(() => !!this._authState().user);
 
   constructor() {
-    // Vérifier si un utilisateur est déjà connecté (stocké en localStorage)
     this.loadStoredUser();
 
-    // Effect pour redirection automatique vers le jeu
     effect(() => {
       const user = this.user();
       if (user && (this.router.url === '/' || this.router.url === '/login')) {
@@ -56,41 +54,30 @@ export class AuthService {
     this._authState.update((current) => ({ ...current, ...updates }));
   }
 
-  // Inscription avec pseudo/password
+  // ✅ INSCRIPTION AVEC HASH CÔTÉ SERVEUR
   async signUp(pseudo: string, password: string) {
     this.updateAuthState({ loading: true, error: null });
 
     try {
-      // Vérifier si le pseudo existe déjà
-      const { data: existingUser, error: checkError } =
-        await this.apiService.supabase
-          .from('USER')
-          .select('name')
-          .eq('name', pseudo)
-          .single();
+      // Appeler la fonction Supabase qui hash le mot de passe
+      const { data, error } = await this.apiService.supabase.rpc(
+        'create_user_with_hashed_password',
+        {
+          user_name: pseudo,
+          plain_password: password,
+        }
+      );
 
-      if (existingUser) {
-        throw new Error('Ce pseudo est déjà pris');
+      if (error) throw error;
+
+      const result = data[0]; // La fonction retourne un tableau avec un élément
+
+      if (!result.success) {
+        throw new Error(result.message);
       }
-      if (checkError && checkError.code !== 'PGRST116') {
-        throw checkError;
-      }
-
-      // Créer le nouvel utilisateur
-      const { data: newUser, error: insertError } =
-        await this.apiService.supabase
-          .from('USER')
-          .insert({
-            name: pseudo,
-            password: password,
-          })
-          .select('id, name')
-          .single();
-
-      if (insertError) throw insertError;
 
       // Stocker l'utilisateur
-      const user = { id: newUser.id, name: newUser.name };
+      const user = { id: result.id, name: result.name };
       localStorage.setItem('hamster_user', JSON.stringify(user));
 
       this.updateAuthState({
@@ -108,23 +95,30 @@ export class AuthService {
     }
   }
 
-  // Connexion avec pseudo/password
+  // ✅ CONNEXION AVEC VÉRIFICATION DE HASH CÔTÉ SERVEUR
   async signIn(pseudo: string, password: string) {
     this.updateAuthState({ loading: true, error: null });
 
     try {
-      const { data: user, error } = await this.apiService.supabase
-        .from('USER')
-        .select('id, name')
-        .eq('name', pseudo)
-        .eq('password', password)
-        .single();
+      // Appeler la fonction Supabase qui vérifie le mot de passe hashé
+      const { data, error } = await this.apiService.supabase.rpc(
+        'authenticate_user',
+        {
+          user_name: pseudo,
+          plain_password: password,
+        }
+      );
 
-      if (error || !user) {
-        throw new Error('Pseudo ou mot de passe incorrect');
+      if (error) throw error;
+
+      const result = data[0]; // La fonction retourne un tableau avec un élément
+
+      if (!result.success) {
+        throw new Error(result.message);
       }
 
       // Stocker l'utilisateur
+      const user = { id: result.id, name: result.name };
       localStorage.setItem('hamster_user', JSON.stringify(user));
 
       this.updateAuthState({
@@ -142,7 +136,7 @@ export class AuthService {
     }
   }
 
-  // Déconnexion
+  // DÉCONNEXION
   async signOut() {
     try {
       localStorage.removeItem('hamster_user');
@@ -164,32 +158,15 @@ export class AuthService {
     }
   }
 
-  // Ces méthodes ne sont plus nécessaires avec le système pseudo
-  async signInWithMagicLink(pseudo: string) {
-    return {
-      success: false,
-      error: 'Fonction non disponible avec les pseudos',
-    };
-  }
-
-  async resetPassword(pseudo: string) {
-    return {
-      success: false,
-      error: 'Fonction non disponible avec les pseudos',
-    };
-  }
-
-  // Méthode helper pour obtenir l'ID utilisateur
+  // Méthodes helpers (pas de changement)
   getUserId(): string | null {
     return this.user()?.id ?? null;
   }
 
-  // Méthode helper pour obtenir le pseudo utilisateur
   getUserName(): string | null {
     return this.user()?.name ?? null;
   }
 
-  // Alias pour compatibilité
   getUserEmail(): string | null {
     return this.getUserName();
   }

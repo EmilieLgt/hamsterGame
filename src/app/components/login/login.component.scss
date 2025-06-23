@@ -113,7 +113,7 @@ form {
     margin-top: 0.2em;
   }
 
-  button {
+  .button-play {
     @extend .button-play-again;
     margin-top: 1em;
   }
@@ -122,6 +122,7 @@ form {
     font-size: 1.2em;
   }
   .back-button {
+    @extend .button-play-again;
     background-color: rgb(243, 244, 235);
     border: none;
   }
@@ -149,4 +150,32 @@ form {
     opacity: 1;
     transform: scale(1);
   }
+}
+
+.succes {
+  color: green;
+  text-align: center;
+}
+
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.password-input-container input {
+  flex: 1;
+}
+.password-toggle-btn {
+  position: absolute;
+  right: 5px;
+  bottom: 10px;
+  background: none;
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
