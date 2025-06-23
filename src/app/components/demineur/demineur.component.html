@@ -1,0 +1,51 @@
+<div class="dem-container">
+  <div class="info-container">
+    <div class="number">{{ flagsRemaining() }}</div>
+
+    @if(isWaiting()) {
+    <button class="icon-container" (click)="startGame()">
+      <img src="/play-svgrepo-com.svg" alt="start" />
+    </button>
+    } @if(isPlaying()) {
+    <button class="icon-container" disabled>
+      <img src="/smileyDem.png" />
+    </button>
+    } @if(isGameOver()) {
+    <button class="icon-container" (click)="restart()">
+      <img src="/sadDem.png" alt="Recommencer" />
+    </button>
+    } @if(isVictory()) {
+    <button class="icon-container victory-btn" (click)="restart()">
+      <img src="/ggDem.png" alt="Rejouer" />
+    </button>
+    }
+
+    <div class="timer">{{ message() }}</div>
+  </div>
+
+  @if(isGameOver()) {
+  <div class="game-over">
+    <h4>GAME OVER</h4>
+  </div>
+  } @if(isVictory()) {
+  <div class="victory">
+    <h4>VICTOIRE !</h4>
+  </div>
+  } @if(!isWaiting()) {
+  <div class="grid">
+    @for (item of Array(81); track $index) {
+    <button
+      class="case"
+      [class.case-clicked]="isCaseClicked($index)"
+      [class.case-flagged]="isCaseFlagged($index)"
+      [class.mine-exploded]="isMineCase($index) && isGameOver()"
+      [disabled]="!isPlaying() || isCaseClicked($index)"
+      (click)="clickCase($index)"
+      (contextmenu)="onRightClick($event, $index)"
+    >
+      {{ getCaseText($index) }}
+    </button>
+    }
+  </div>
+  }
+</div>

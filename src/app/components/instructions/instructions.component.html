@@ -14,9 +14,14 @@
   <img src="/skull-svgrepo-com.svg" />.
 </p>
 
-<button (click)="startGame()">Jouer</button>}
- @if(displayLogin()) {
+<button class="button-play" (click)="startGame()">Jouer</button>}
+@if(displayLogin()) {
 <app-login (closeLogin)="closeLoginDisquette()"></app-login>
+}
+
+<button class="button-nico" (click)="openDemineur()">Nico</button>
+@if(showDemineur()) {
+<app-demineur></app-demineur>
 }
 
 <!-- @if(!displayLogin) {

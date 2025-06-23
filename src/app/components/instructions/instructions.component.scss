@@ -14,8 +14,17 @@ img {
   margin-top: 1em;
 }
 
-button {
+.button-play {
   @extend .button-play-again;
   margin-top: 1em;
   font-size: 1.5em;
+}
+
+.button-nico {
+  background-color: yellow;
+  border: none;
+  padding: 5px;
+  height: 30px;
+  width: 30px;
+  border-radius: 100%;
 }

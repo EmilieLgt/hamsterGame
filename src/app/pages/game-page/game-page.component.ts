@@ -5,11 +5,18 @@ import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { IScore } from '../../models/score.model';
 import { CommonModule } from '@angular/common';
+import { DemineurComponent } from '../../components/demineur/demineur.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [InstructionsComponent, CommonModule],
+  imports: [
+    InstructionsComponent,
+    CommonModule,
+    DemineurComponent,
+    RouterModule,
+  ],
   templateUrl: './game-page.component.html',
   styleUrl: './game-page.component.scss',
 })
@@ -20,7 +27,7 @@ export class GamePageComponent {
   topScores: IScore[] = [];
   scores: IScore[] = [];
   showLogin = signal(false);
-
+  
   // Signals depuis AuthService
   user = this.authService.user;
   isAuthenticated = this.authService.isAuthenticated;
