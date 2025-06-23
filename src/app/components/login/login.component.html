@@ -23,6 +23,7 @@
     <div class="question">
       <div>Afin de conserver vos scores, <br />enregistrez-vous !</div>
       <button
+        class="button-play"
         style="margin-top: 10px"
         (click)="showLogin()"
         [disabled]="authLoading()"
@@ -31,6 +32,7 @@
       </button>
       <div style="margin-top: 20px">Pas encore de compte ?</div>
       <button
+        class="button-play"
         style="margin-top: 10px"
         (click)="showRegister()"
         [disabled]="authLoading()"
@@ -46,7 +48,7 @@
       <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
         <label>Pseudo</label>
         <input
-          type="pseudo"
+          type="text"
           formControlName="pseudo"
           [class.error]="
             registerForm.get('pseudo')?.invalid &&
@@ -59,17 +61,28 @@
 
         <label>Mot de passe - 6 caractères min.</label>
         <div class="mdp">
-          Ne mettez pas votre mot de passe de banque, c'est pas hashé (ou si
-          faites ça ... pour financer les serveurs...).
+          Ne mettez pas votre mot de passe de banque, je sais pas où c'est
+          stocké
         </div>
-        <input
-          type="password"
-          formControlName="password"
-          [class.error]="
-            registerForm.get('password')?.invalid &&
-            registerForm.get('password')?.touched
-          "
-        />
+        <div class="password-input-container">
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            [class.error]="
+              registerForm.get('password')?.invalid &&
+              registerForm.get('password')?.touched
+            "
+          />
+          <button
+            type="button"
+            class="password-toggle-btn"
+            (click)="togglePasswordVisibility()"
+            tabindex="-1"
+          >
+            {{ showPassword() ? "x" : "𓁺" }}
+          </button>
+        </div>
+
         @if(getFieldError('register', 'password')) {
         <div class="field-error">
           {{ getFieldError("register", "password") }}
@@ -78,7 +91,7 @@
 
         <button
           type="submit"
-          class="inscrire"
+          class="button-play"
           [disabled]="registerForm.invalid || isSubmitting() || authLoading()"
         >
           {{ isSubmitting() ? "Inscription..." : "S'inscrire" }}
@@ -100,6 +113,9 @@
     @if(currentView() === 'login') {
     <div class="login-form">
       <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        @if(isAccountCreated()){
+        <div class="succes">Compte créé avec succès</div>
+        }
         <label>Pseudo</label>
         <input
           type="pseudo"
@@ -126,6 +142,7 @@
         }
 
         <button
+          class="button-play"
           type="submit"
           [disabled]="loginForm.invalid || isSubmitting() || authLoading()"
         >
