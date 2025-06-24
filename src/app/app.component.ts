@@ -5,12 +5,11 @@ import { Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
 import { LoginComponent } from './components/login/login.component';
-import { DemineurComponent } from './components/demineur/demineur.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, LoginComponent, DemineurComponent],
+  imports: [RouterOutlet, RouterLink, LoginComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -43,5 +42,4 @@ export class AppComponent {
   goBack() {
     this.location.back();
   }
- 
 }

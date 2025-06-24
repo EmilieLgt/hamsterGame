@@ -1,4 +1,4 @@
-@if(!displayLogin()) {
+@if(!displayLogin() && !showDemineur()) {
 <p class="first-p">
   L’objectif du jeu du hamster est de conserver le plus d’hamsters, le plus
   longtemps possible.
@@ -17,11 +17,12 @@
 <button class="button-play" (click)="startGame()">Jouer</button>}
 @if(displayLogin()) {
 <app-login (closeLogin)="closeLoginDisquette()"></app-login>
-}
-
-<button class="button-nico" (click)="openDemineur()">Nico</button>
+} @if(!showDemineur() && !displayLogin()) {
+<button class="button-nico" (click)="openDemineur()">Nico</button>}
 @if(showDemineur()) {
 <app-demineur></app-demineur>
+<button class="button-nico bg-red" (click)="openDemineur()">X</button>
+
 }
 
 <!-- @if(!displayLogin) {
