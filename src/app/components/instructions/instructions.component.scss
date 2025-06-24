@@ -27,4 +27,11 @@ img {
   height: 30px;
   width: 30px;
   border-radius: 100%;
+  margin: auto;
+}
+
+.bg-red {
+  background-color: v.$red;
+  color: v.$white;
+  margin: auto;
 }

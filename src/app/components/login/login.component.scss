@@ -8,7 +8,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 5em auto;
+  margin: 80px;
+  margin-left: 10px;
   gap: 30px;
   animation: float 5s ease-in-out infinite;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
@@ -178,4 +179,11 @@ form {
   align-items: center;
   justify-content: center;
   z-index: 1;
+}
+
+@media screen and (max-width: 991px) {
+  .disquette-containner {
+    margin: 50px auto;
+    width: 100vw;
+  }
 }
