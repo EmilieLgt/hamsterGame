@@ -5,14 +5,13 @@ import { IScore } from '../../models/score.model';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { CardSelectorComponent } from '../cards/card-selector/card-selector.component';
-import { v4 as uuidv4 } from 'uuid';
 import { RouterLink } from '@angular/router';
-import { Router } from 'express';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-month-update',
   standalone: true,
-  imports: [FormsModule, CardSelectorComponent, RouterLink],
+  imports: [FormsModule, CardSelectorComponent, RouterLink, NgClass],
   templateUrl: './month-update.component.html',
   styleUrl: './month-update.component.scss',
 })
@@ -272,7 +271,11 @@ export class MonthUpdateComponent implements OnInit {
   }
 
   setHamstersToBuy(value: number): void {
-    this.hamstersToBuy = this.calculateEnoughMoney(value);
+    const maxAffordable = Math.floor(this.money / this.hamsterPrice);
+    this.hamstersToBuy = Math.min(
+      this.calculateEnoughMoney(value),
+      maxAffordable
+    );
     this.canBuyHamster = this.money >= this.hamstersToBuy * this.hamsterPrice;
   }
 
@@ -287,7 +290,8 @@ export class MonthUpdateComponent implements OnInit {
   }
 
   setFoodBought(value: number): void {
-    this.foodBought = this.calculateEnoughMoney(value);
+    const maxAffordable = Math.floor(this.money / this.foodPrice);
+    this.foodBought = Math.min(this.calculateEnoughMoney(value), maxAffordable);
     this.canBuyFood = this.money >= this.foodBought * this.foodPrice;
   }
 
@@ -306,12 +310,28 @@ export class MonthUpdateComponent implements OnInit {
   }
 
   setCagesBought(value: number): void {
-    this.cagesBought = this.calculateEnoughMoney(value);
+    const maxAffordable = Math.floor(this.money / this.cagePrice);
+    this.cagesBought = Math.min(
+      this.calculateEnoughMoney(value),
+      maxAffordable
+    );
     this.canBuyCage = this.money >= this.cagesBought * this.cagePrice;
   }
 
   getPriceCagesBought(): number {
     return this.canBuyCage ? this.cagesBought * this.cagePrice : 0;
+  }
+
+  getMaxAffordableHamsters(): number {
+    return Math.floor(this.money / this.hamsterPrice);
+  }
+
+  getMaxAffordableFood(): number {
+    return Math.floor(this.money / this.foodPrice);
+  }
+
+  getMaxAffordableCages(): number {
+    return Math.floor(this.money / this.cagePrice);
   }
 
   // Gestion des ventes d'hamsters
@@ -376,6 +396,84 @@ export class MonthUpdateComponent implements OnInit {
     this.cagesBought = 0;
     this.wantsToBuyCage = false;
     this.canBuyCage = true;
+  }
+
+  // Fonctions pour vendre des hamsters mâles
+  incrementMaleSold(): void {
+    if (this.maleSold < this.maleAdultHasmters) {
+      this.maleSold++;
+      this.setMaleSold(this.maleSold);
+    }
+  }
+
+  decrementMaleSold(): void {
+    if (this.maleSold > 0) {
+      this.maleSold--;
+      this.setMaleSold(this.maleSold);
+    }
+  }
+
+  // Fonctions pour vendre des hamsters femelles
+  incrementFemaleSold(): void {
+    if (this.femaleSold < this.femaleAdultHasmters) {
+      this.femaleSold++;
+      this.setFemaleSold(this.femaleSold);
+    }
+  }
+
+  decrementFemaleSold(): void {
+    if (this.femaleSold > 0) {
+      this.femaleSold--;
+      this.setFemaleSold(this.femaleSold);
+    }
+  }
+
+  // Fonctions pour acheter des hamsters
+  incrementHamstersToBuy(): void {
+    const max = this.getMaxAffordableHamsters();
+    if (this.hamstersToBuy < max) {
+      this.hamstersToBuy++;
+      this.setHamstersToBuy(this.hamstersToBuy);
+    }
+  }
+
+  decrementHamstersToBuy(): void {
+    if (this.hamstersToBuy > 0) {
+      this.hamstersToBuy--;
+      this.setHamstersToBuy(this.hamstersToBuy);
+    }
+  }
+
+  // Fonctions pour acheter des cages
+  incrementCagesBought(): void {
+    const max = this.getMaxAffordableCages();
+    if (this.cagesBought < max) {
+      this.cagesBought++;
+      this.setCagesBought(this.cagesBought);
+    }
+  }
+
+  decrementCagesBought(): void {
+    if (this.cagesBought > 0) {
+      this.cagesBought--;
+      this.setCagesBought(this.cagesBought);
+    }
+  }
+
+  // Fonctions pour acheter de la nourriture
+  incrementFoodBought(): void {
+    const max = this.getMaxAffordableFood();
+    if (this.foodBought < max) {
+      this.foodBought++;
+      this.setFoodBought(this.foodBought);
+    }
+  }
+
+  decrementFoodBought(): void {
+    if (this.foodBought > 0) {
+      this.foodBought--;
+      this.setFoodBought(this.foodBought);
+    }
   }
 
   isEventMonth(): boolean {
@@ -610,15 +708,14 @@ export class MonthUpdateComponent implements OnInit {
   }
 
   async resetAll(): Promise<void> {
-
-    // Prix initiaux 
+    // Prix initiaux
     this.hamsterPrice = Math.floor(Math.random() * 10) + 5;
     this.cagePrice = Math.floor(Math.random() * 10) + 1;
     this.foodPrice = Math.floor(Math.random() * 10) + 1;
 
-    // Stocks initiaux 
-    this.foodStock = 8; 
-    this.money = 60; 
+    // Stocks initiaux
+    this.foodStock = 8;
+    this.money = 60;
     this.cage = 1;
 
     // Reset du flag de sauvegarde
