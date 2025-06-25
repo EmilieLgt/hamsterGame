@@ -33,13 +33,13 @@
 <h2>Situation du mois : {{ monthNumber }}</h2>
 
 <div class="month-death">
-  <p class="red">
-    <img class="skull-icon" src="/skull-svgrepo-com.svg" />MORTS DE FAIM
-    {{ deathByHunger }}
+  <p [ngClass]="deathByHunger > 0 ? 'red' : 'white'">
+    <img class="skull-icon" src="/skull-svgrepo-com.svg" alt="Skull icon" />
+    MORTS DE FAIM : {{ deathByHunger }}
   </p>
-  <p class="red">
-    <img class="skull-icon" src="/skull-svgrepo-com.svg" />MORTS ETTOUFFÉS
-    {{ deathBySuffocation }}
+  <p [ngClass]="deathBySuffocation > 0 ? 'red' : 'white'">
+    <img class="skull-icon" src="/skull-svgrepo-com.svg" alt="Skull icon" />
+    MORTS ÉTOUFFÉS : {{ deathBySuffocation }}
   </p>
 </div>
 <div class="separator"></div>
@@ -127,6 +127,8 @@
         (ngModelChange)="setMaleSold($event)"
         max="{{ maleAdultHasmters }}"
       />
+      <button class="plus" (click)="incrementMaleSold()">+</button>
+      <button class="minus" (click)="decrementMaleSold()">-</button>
     </div>
     @if(maleSold > 0){<span class="yellow">+ {{ getPriceMaleSold() }}fr</span>}
   </div>
@@ -147,6 +149,8 @@
         (ngModelChange)="setFemaleSold($event)"
         max="{{ femaleAdultHasmters }}"
       />
+      <button class="plus" (click)="incrementFemaleSold()">+</button>
+      <button class="minus" (click)="decrementFemaleSold()">-</button>
     </div>
     @if(femaleSold > 0) {<span class="yellow"
       >+ {{ getPriceFemaleSold() }}fr</span
@@ -174,7 +178,11 @@
         type="number"
         [ngModel]="hamstersToBuy"
         (ngModelChange)="setHamstersToBuy($event)"
+        [max]="getMaxAffordableHamsters()"
+        min="0"
       />
+      <button class="plus" (click)="incrementHamstersToBuy()">+</button>
+      <button class="minus" (click)="decrementHamstersToBuy()">-</button>
     </div>
     @if(hamstersToBuy > 0) {
     <span class="yellow">- {{ getPriceHamstersBought() }}fr</span>
@@ -201,14 +209,19 @@
         type="number"
         [(ngModel)]="cagesBought"
         (ngModelChange)="setCagesBought($event)"
+        [max]="getMaxAffordableCages()"
+        min="0"
+        placeholder="Max: {{ getMaxAffordableCages() }}"
       />
+      <button class="plus" (click)="incrementCagesBought()">+</button>
+      <button class="minus" (click)="decrementCagesBought()">-</button>
     </div>
+
     @if(canBuyCage && cagesBought > 0) {
     <span class="yellow">- {{ getPriceCagesBought() }}fr</span>}
   </div>
   }
 </div>
-
 <div class="one-action-container">
   <div>
     Acheter nourriture ? @if (!canBuyFood){
@@ -228,7 +241,12 @@
         type="number"
         [(ngModel)]="foodBought"
         (ngModelChange)="setFoodBought($event)"
+        [max]="getMaxAffordableFood()"
+        min="0"
+        placeholder="Max: {{ getMaxAffordableFood() }}"
       />
+      <button class="plus" (click)="incrementFoodBought()">+</button>
+      <button class="minus" (click)="decrementFoodBought()">-</button>
     </div>
     @if(foodBought>0 && foodBought > 0) {<span class="yellow"
       >- {{ getPriceOfFoodBought() }} fr</span
@@ -239,12 +257,16 @@
 
 @if (getMoneyForNextMonth() >= 0) {
 <button class="next-month-button" (click)="onNextMonth()">Prochain mois</button>
+<p class="preview-next-month">Prochain mois</p>
+
 <div class="end-of-month-container">
   <p class="yellow" id="money-next-month">
-    Argent pour le prochain mois : {{ getMoneyForNextMonth() }} fr
+    <img class="icon-money" src="/moneyIcon.webp" />
+    {{ getMoneyForNextMonth() }} fr
   </p>
   <p class="yellow" id="money-next-month">
-    Nourriture pour le prochain mois : {{ getFoodForNextMonth() }} kg
+    <img class="icon-food" src="/foodIcon.webp" />
+    {{ getFoodForNextMonth() }} kg
   </p>
 </div>
 } @if (getMoneyForNextMonth() < 0) {
