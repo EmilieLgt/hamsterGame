@@ -178,6 +178,8 @@ export class MonthUpdateComponent implements OnInit {
   }
 
   // Calcul de la consommation de nourriture
+  foodConsumedThisMonth: number = 0;
+
   updateFoodConsumption(): void {
     const adultFoodNeeded =
       (this.femaleAdultHamsters + this.maleAdultHamsters) * 1;
@@ -185,14 +187,15 @@ export class MonthUpdateComponent implements OnInit {
       (this.femaleSmallHamsters + this.maleSmallHamsters) * 0.5;
     const totalFoodNeeded = adultFoodNeeded + smallFoodNeeded;
 
+    this.foodConsumedThisMonth = Math.min(totalFoodNeeded, this.foodStock);
+
     if (this.foodStock < totalFoodNeeded) {
-      // Calculer combien d'adultes peuvent être nourris avec le stock restant
-      const adultsCanFeed = Math.floor(this.foodStock / 1); // 1 kg par adulte
+      const foodAfterSmalls = Math.max(0, this.foodStock - smallFoodNeeded);
+      const adultsCanFeed = Math.floor(foodAfterSmalls / 1);
       const totalAdults = this.femaleAdultHamsters + this.maleAdultHamsters;
       const hamstersToDie = Math.max(0, totalAdults - adultsCanFeed);
 
-      if (hamstersToDie > 0) {
-        // Distribution équitable des morts
+      if (hamstersToDie > 0 && totalAdults > 0) {
         const femalesToDie = Math.min(
           Math.round((hamstersToDie * this.femaleAdultHamsters) / totalAdults),
           this.femaleAdultHamsters
@@ -566,6 +569,21 @@ export class MonthUpdateComponent implements OnInit {
     }
   }
 
+  public hamsterDirections: boolean[] = [];
+
+  getTotalAdultHamsters(): boolean[] {
+    const total = this.femaleAdultHamsters + this.maleAdultHamsters;
+
+    if (this.hamsterDirections.length !== total) {
+      this.hamsterDirections = Array.from(
+        { length: total },
+        () => Math.random() < 0.5
+      );
+    }
+
+    return this.hamsterDirections;
+  }
+
   private applyHamsterBirthBoost(percentage: number) {
     this.currentFertilityBonus += percentage;
     this.currentFertilityBonus = Math.max(
@@ -610,36 +628,25 @@ export class MonthUpdateComponent implements OnInit {
     const previousMaleDeaths = this.maleHamsterDeadAll;
     const previousFemaleDeaths = this.femaleHamsterDeadAll;
 
-    // Attribution des nouveaux hamsters achetés
-    const newMales = Math.floor(this.hamstersToBuy / 2);
-    const newFemales = this.hamstersToBuy - newMales;
-    this.maleAdultHamsters += newMales;
-    this.femaleAdultHamsters += newFemales;
-
     // Reset des compteurs de morts
     this.deathByHunger = 0;
     this.deathBySuffocation = 0;
 
-    // Mise à jour de la nourriture et morts
+    // bouffe
     this.foodStock += this.foodBought;
     this.updateFoodConsumption();
     this.calculateSuffocationDeaths();
 
-    // Faire grandir les petits
+    //  petits into adults
     this.femaleAdultHamsters += this.femaleSmallHamsters;
     this.maleAdultHamsters += this.maleSmallHamsters;
     this.femaleSmallHamsters = 0;
     this.maleSmallHamsters = 0;
 
-    // Compter seulement les nouveaux morts de ce mois
-    const newMaleDeaths = this.maleHamsterDeadAll - previousMaleDeaths;
-    const newFemaleDeaths = this.femaleHamsterDeadAll - previousFemaleDeaths;
-    this.allHamstersDead += newMaleDeaths + newFemaleDeaths;
-
-    // Reproduction
+    // Reproduction des survivants
     this.handleBreeding();
 
-    // Mise à jour après ventes
+    // hamsters  à acheter
     this.femaleAdultHamsters = this.calculateEnoughMoney(
       this.femaleAdultHamsters - this.femaleSold
     );
@@ -647,6 +654,17 @@ export class MonthUpdateComponent implements OnInit {
       this.maleAdultHamsters - this.maleSold
     );
     this.hamsterSold += this.maleSold + this.femaleSold;
+
+    // nouveaux hamsters
+    const newMales = Math.floor(this.hamstersToBuy / 2);
+    const newFemales = this.hamstersToBuy - newMales;
+    this.maleAdultHamsters += newMales;
+    this.femaleAdultHamsters += newFemales;
+
+    // morts
+    const newMaleDeaths = this.maleHamsterDeadAll - previousMaleDeaths;
+    const newFemaleDeaths = this.femaleHamsterDeadAll - previousFemaleDeaths;
+    this.allHamstersDead += newMaleDeaths + newFemaleDeaths;
 
     // Mise à jour des stocks
     this.money = this.getMoneyForNextMonth();
@@ -663,6 +681,9 @@ export class MonthUpdateComponent implements OnInit {
     this.wantsToSellMale = false;
     this.femaleSold = 0;
     this.wantsToSellFemale = false;
+
+    // Reset directions pour nouveau mois
+    this.hamsterDirections = [];
 
     // Mise à jour finale
     this.updateHamstersByCage();
@@ -770,5 +791,6 @@ export class MonthUpdateComponent implements OnInit {
     this.ngOnInit();
     this.allHamstersDead = 0;
     this.hamsterSold = 0;
+    this.foodConsumedThisMonth = 0;
   }
 }

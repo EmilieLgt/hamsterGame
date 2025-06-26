@@ -57,18 +57,26 @@
   button {
     border: none;
     color: v.$white;
-    height: 20px;
-    width: 20px;
     border-radius: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: v.$black;
   }
   .plus {
     background-color: green;
+    height: 20px;
+    width: 20px;
   }
   .minus {
     background-color: v.$red;
+    height: 20px;
+    width: 20px;
+  }
+  #backbutton {
+    margin-left: 2em;
+    height: initial;
+    width: initial;
   }
 
   .plus:active,
@@ -233,4 +241,77 @@
   align-items: center;
   color: v.$yellow;
   margin-top: 1em;
+}
+
+.hamsters-gif-container {
+  display: flex;
+  height: 80px;
+  margin-top: 1em;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+  img.hamster-gif {
+    height: 80px;
+    width: auto;
+    padding-top: 1em;
+    flex-shrink: 1;
+    transition: all 0.3s ease;
+  }
+
+  /* ✅ Adaptation automatique selon le nombre */
+  &[data-hamster-count="1"] img {
+    height: 80px;
+  }
+  &[data-hamster-count="2"] img {
+    height: 70px;
+  }
+  &[data-hamster-count="3"] img {
+    height: 60px;
+  }
+  &[data-hamster-count="4"] img {
+    height: 50px;
+  }
+  &[data-hamster-count="5"] img {
+    height: 45px;
+  }
+  &[data-hamster-count="6"] img {
+    height: 40px;
+  }
+  &[data-hamster-count="7"] img {
+    height: 35px;
+  }
+  &[data-hamster-count="8"] img {
+    height: 30px;
+  }
+  &[data-hamster-count="9"] img {
+    height: 28px;
+  }
+  &[data-hamster-count="10"] img {
+    height: 25px;
+  }
+
+  /* ✅ Pour plus de 10 hamsters, calcul automatique */
+  @for $i from 11 through 50 {
+    &[data-hamster-count="#{$i}"] img {
+      height: #{max(20px, 300px / $i)};
+    }
+  }
+
+  /* ✅ Fallback pour beaucoup de hamsters */
+  &[data-hamster-count] img {
+    max-width: calc(100% / var(--hamster-count, 1));
+    min-height: 15px;
+  }
+
+  .hamster-gif.flipped {
+    transform: scaleX(-1);
+  }
+}
+
+.food-consumed {
+  color: v.$yellow;
+  display: flex;
+  align-items: center;
+  justify-content: end;
 }
