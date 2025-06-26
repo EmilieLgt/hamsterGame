@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { GamePageComponent } from './pages/game-page/game-page.component';
 // import { KidGamePageComponent } from './pages/kid-game-page/kid-game-page.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
 import { authGuard } from './services/auth-guard.guard';

@@ -12,7 +12,7 @@
 
   @for (s of scores(); track $index) {
   <div class="player-row">
-    <div class="stat">
+    <div class="pseudo">
       @if($index === 0) {
       <img src="/medailleor.png" alt="or" />
       } @if($index === 1) {
@@ -20,8 +20,8 @@
       } @if($index === 2) {
       <img src="/medaillebronze.png" alt="bronze" />
       }
-      {{ $index + 1 }}.
-      {{ s.user_name }}
+      <p>{{ $index + 1 }}.</p>
+      <p>{{ s.user_name }}</p>
     </div>
     <div class="stat">{{ s.months }}</div>
     <div class="stat">{{ s.hamsters }}</div>

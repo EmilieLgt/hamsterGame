@@ -40,6 +40,7 @@ export class AppComponent {
   }
 
   goBack() {
+    console.log(this.location);
     this.location.back();
   }
 }
