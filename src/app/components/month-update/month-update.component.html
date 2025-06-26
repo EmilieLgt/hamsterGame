@@ -47,12 +47,12 @@
 <div class="hamster-month-container">
   <div class="gender-hamster">
     <h3>Mâles</h3>
-    <p>Adultes : {{ maleAdultHasmters }}</p>
+    <p>Adultes : {{ maleAdultHamsters }}</p>
     <p>Petits : {{ maleSmallHamsters }}</p>
   </div>
   <div class="gender-hamster">
     <h3>Femelles</h3>
-    <p>Adultes : {{ femaleAdultHasmters }}</p>
+    <p>Adultes : {{ femaleAdultHamsters }}</p>
     <p>Petits : {{ femaleSmallHamsters }}</p>
   </div>
   <div class="gender-hamster">
@@ -125,7 +125,7 @@
         type="number"
         [(ngModel)]="maleSold"
         (ngModelChange)="setMaleSold($event)"
-        max="{{ maleAdultHasmters }}"
+        max="{{ maleAdultHamsters }}"
       />
       <button class="plus" (click)="incrementMaleSold()">+</button>
       <button class="minus" (click)="decrementMaleSold()">-</button>
@@ -147,7 +147,7 @@
         type="number"
         [(ngModel)]="femaleSold"
         (ngModelChange)="setFemaleSold($event)"
-        max="{{ femaleAdultHasmters }}"
+        max="{{ femaleAdultHamsters }}"
       />
       <button class="plus" (click)="incrementFemaleSold()">+</button>
       <button class="minus" (click)="decrementFemaleSold()">-</button>
