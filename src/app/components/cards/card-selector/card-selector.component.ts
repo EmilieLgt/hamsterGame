@@ -89,8 +89,8 @@ export class CardSelectorComponent implements OnInit {
     // morts
     {
       title: 'Malus',
-      text: "Cages mal fermées. Tous les hamsters tentent de s'échapper. Vous arrivez à temps pour en sauver la moitié.",
-      effect: { type: 'hamster_death_percentage', value: 50 },
+      text: 'Bagarre générale ! 20% des hamsters se blessent mortellement',
+      effect: { type: 'hamster_death_percentage', value: 20 },
     },
   ];
   selectedEvents: IGameEvent[] = [];

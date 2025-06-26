@@ -8,10 +8,7 @@ describe('MonthUpdateComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        MonthUpdateComponent, 
-      ],
+      imports: [FormsModule, MonthUpdateComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MonthUpdateComponent);
@@ -28,16 +25,16 @@ describe('MonthUpdateComponent', () => {
     expect(component.foodStock).toBe(5);
     expect(component.money).toBe(50);
     expect(component.cage).toBe(1);
-    expect(component.femaleAdultHasmters).toBe(2);
-    expect(component.maleAdultHasmters).toBe(2);
+    expect(component.femaleAdultHamsters).toBe(2);
+    expect(component.maleAdultHamsters).toBe(2);
     expect(component.femaleSmallHamsters).toBe(0);
     expect(component.maleSmallHamsters).toBe(0);
   });
 
   it('devrait calculer correctement les morts par suffocation', () => {
-    component.cage = 1; 
-    component.maleAdultHasmters = 3;
-    component.femaleAdultHasmters = 3;
+    component.cage = 1;
+    component.maleAdultHamsters = 3;
+    component.femaleAdultHamsters = 3;
 
     component.calculateSuffocationDeaths();
 
@@ -45,15 +42,15 @@ describe('MonthUpdateComponent', () => {
     expect(component.deathBySuffocation).toBeGreaterThan(0);
     // Vérifier que le nombre total de hamsters ne dépasse pas la capacité
     const totalHamsters =
-      component.maleAdultHasmters + component.femaleAdultHasmters;
+      component.maleAdultHamsters + component.femaleAdultHamsters;
     expect(totalHamsters).toBeLessThanOrEqual(component.cage * 4);
   });
 
   it('devrait calculer correctement les morts par faim', () => {
     // Configuration avec pas de nourriture
     component.foodStock = 0;
-    component.maleAdultHasmters = 4;
-    component.femaleAdultHasmters = 4;
+    component.maleAdultHamsters = 4;
+    component.femaleAdultHamsters = 4;
 
     // Vérifier qu'il y a eu des morts par faim
     expect(component.deathByHunger).toBeGreaterThan(0);
@@ -61,8 +58,8 @@ describe('MonthUpdateComponent', () => {
 
   it('devrait gérer correctement la reproduction des hamsters', () => {
     // Configuration initiale pour la reproduction
-    component.maleAdultHasmters = 2;
-    component.femaleAdultHasmters = 2;
+    component.maleAdultHamsters = 2;
+    component.femaleAdultHamsters = 2;
     component.maleSmallHamsters = 0;
     component.femaleSmallHamsters = 0;
 
@@ -90,8 +87,8 @@ describe('MonthUpdateComponent', () => {
 
   it('devrait détecter correctement la fin du jeu', () => {
     // Configuration pour une fin de jeu
-    component.maleAdultHasmters = 0;
-    component.femaleAdultHasmters = 0;
+    component.maleAdultHamsters = 0;
+    component.femaleAdultHamsters = 0;
     component.maleSmallHamsters = 0;
     component.femaleSmallHamsters = 0;
 

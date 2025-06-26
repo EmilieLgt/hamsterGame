@@ -79,8 +79,11 @@
     {{ foodStock }} kg
   </p>
 </div>
-
-@if (showGameEvent) {
+@if(foodConsumedThisMonth > 0) {
+<div class="food-consumed">
+  Consommation mois dernier : {{ foodConsumedThisMonth.toFixed(1) }} kg
+</div>
+} @if (showGameEvent) {
 <app-card-selector
   (eventApplied)="onGameEventApplied($event)"
   (continueToGame)="continueToActions()"
@@ -163,7 +166,7 @@
     Acheter des hamsters ? @if (!canBuyHamster) {
     <p class="red">
       Vous n'avez pas les fonds nécessaires
-      <button (click)="cancelBuyHamster()">Retour</button>
+      <button id="#backbutton" (click)="cancelBuyHamster()">Retour</button>
     </p>
 
     } @else {
@@ -195,7 +198,7 @@
     Acheter cage ? @if (!canBuyCage) {
     <p class="red">
       Vous n'avez pas les fonds nécessaires
-      <button (click)="cancelBuyCage()">Retour</button>
+      <button id="#backbutton" (click)="cancelBuyCage()">Retour</button>
     </p>
     } @else {
     <button (click)="buyCage(true)" id="oui" value="true">OUI</button>
@@ -227,7 +230,7 @@
     Acheter nourriture ? @if (!canBuyFood){
     <p class="red">
       Vous n'avez pas les fonds nécessaires
-      <button (click)="cancelBuyFood()">Retour</button>
+      <button id="#backbutton" (click)="cancelBuyFood()">Retour</button>
     </p>
     } @else {
     <button (click)="buyFood(true)" id="oui" value="true">OUI</button>
@@ -275,3 +278,7 @@
   achats
 </p>
 } } }
+<div
+  class="hamsters-gif-container"
+  [attr.data-hamster-count]="femaleAdultHamsters + maleAdultHamsters"
+></div>

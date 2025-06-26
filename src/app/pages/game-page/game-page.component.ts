@@ -1,6 +1,5 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { InstructionsComponent } from '../../components/instructions/instructions.component';
-import { LoginComponent } from '../../components/login/login.component';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { IScore } from '../../models/score.model';
