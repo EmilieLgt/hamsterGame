@@ -50,8 +50,7 @@ export class GamePageComponent {
       });
 
       // Recharger les scores
-      this.topScores = await this.#apiService.getTopScores(10);
-      this.scores = await this.#apiService.getAllScores();
+      this.scores = await this.#apiService.getAllScores(10);
     } catch (error) {
       console.error('Erreur sauvegarde score:', error);
     }

@@ -29,12 +29,12 @@ export class AuthService {
   constructor() {
     this.loadStoredUser();
 
-    effect(() => {
-      const user = this.user();
-      if (user && (this.router.url === '/' || this.router.url === '/login')) {
-        this.router.navigate(['/game']);
-      }
-    });
+    // effect(() => {
+    //   const user = this.user();
+    //   if (user && (this.router.url === '/' || this.router.url === '/login')) {
+    //     this.router.navigate(['/game']);
+    //   }
+    // });
   }
 
   private loadStoredUser() {

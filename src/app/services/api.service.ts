@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { ApplicationRef } from '@angular/core';
+
 import {
   AuthChangeEvent,
   AuthSession,
@@ -10,36 +12,25 @@ import {
 import { environment } from '../../environments/environment';
 import { IUser } from '../models/user.model';
 import { IScore } from '../models/score.model';
+import { first } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  public supabase: SupabaseClient;
-  _session: AuthSession | null = null;
+  public supabase!: SupabaseClient;
 
   constructor() {
-    const url = environment?.supabaseUrl;
-    const key = environment?.supabaseKey;
+    setTimeout(() => {
+      const url = environment?.supabaseUrl;
+      const key = environment?.supabaseKey;
 
-    if (!url || !key) {
-      console.error('URL:', url);
-      console.error('Key:', key);
-      throw new Error('Supabase configuration is missing in environment file');
-    }
-    try {
+      if (!url || !key) {
+        throw new Error('Supabase configuration is missing');
+      }
+
       this.supabase = createClient(url, key);
-    } catch (error) {
-      console.error('❌ Error creating Supabase client:', error);
-      throw error;
-    }
-  }
-
-  get session() {
-    this.supabase.auth.getSession().then(({ data }) => {
-      this._session = data.session;
-    });
-    return this._session;
+    }, 500);
   }
 
   profile(user: User) {
@@ -50,35 +41,28 @@ export class ApiService {
       .single();
   }
 
-  // Récupérer tous les scores
-  async getAllScores() {
-    const { data, error } = await this.supabase
-      .from('SCORE')
-      .select('*')
-      .order('months', { ascending: false });
+  // Récupérer les meilleurs scores
+  async getAllScores(limit: number = 10) {
+    if (!this.supabase) {
+      throw new Error('Supabase client not initialized yet');
+    }
+    try {
+      const { data, error } = await this.supabase
+        .from('SCORE')
+        .select('*')
+        .order('months', { ascending: false })
+        .limit(limit);
 
-    if (error) {
-      console.error('Erreur lors de la récupération des scores:', error);
+      if (error) {
+        console.error('Erreur lors de la récupération du top scores:', error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Erreur getAllScores:', error);
       throw error;
     }
-
-    return data;
-  }
-
-  // Récupérer les meilleurs scores 
-  async getTopScores(limit: number = 10) {
-    const { data, error } = await this.supabase
-      .from('SCORE')
-      .select('*')
-      .order('months', { ascending: false })
-      .limit(limit);
-
-    if (error) {
-      console.error('Erreur lors de la récupération du top scores:', error);
-      throw error;
-    }
-
-    return data;
   }
 
   // Récupérer les scores d'un utilisateur spécifique

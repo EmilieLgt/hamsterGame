@@ -60,7 +60,10 @@ export class LoginComponent {
   });
 
   registerForm: FormGroup = this.formBuilder.group({
-    pseudo: ['', [Validators.required]],
+    pseudo: [
+      '',
+      [Validators.required, Validators.minLength(3), Validators.maxLength(18)],
+    ],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
@@ -158,7 +161,15 @@ export class LoginComponent {
       return 'Pseudo invalide (déjà utilisé)';
     }
     if (field.errors['minlength']) {
+      const requiredLength = field.errors['minlength'].requiredLength;
+      if (fieldName === 'pseudo') {
+        return `Minimum ${requiredLength} caractères`;
+      }
       return 'Minimum 6 caractères';
+    }
+
+    if (field.errors['maxlength']) {
+      return 'Maximum 18 caractères pour le pseudo';
     }
     return 'Erreur de validation';
   }
